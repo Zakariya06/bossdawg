@@ -1,26 +1,1776 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==================================================
+   01. DESIGN TOKENS
+   Single source of truth for the whole site.
+   Values are sampled from the approved hero reference.
+   Do not redefine these anywhere else.
+   ================================================== */
+
+@theme {
+  /* --- Brand colors --- */
+  --color-brand: #f97316; /* Primary orange: buttons, icons, accents */
+  --color-brand-dark: #d95c08; /* Hover / pressed state */
+  --color-brand-light: #ff9540; /* Gradient start, soft highlights */
+  --color-gold: #ffc24a; /* Gradient end, badge labels, star rating */
+
+  /* --- Neutrals --- */
+  --color-ink: #0d0d0d; /* Near-black: dark section backgrounds */
+  --color-ink-soft: #1c1c1c; /* Slightly lifted dark surface */
+  /* Deepest surface — the services intro panel and its service strip. */
+  --color-ink-deep: #0f0a06;
+  /* Headings on light backgrounds. Deep forest green rather than black —
+     warmer against the brand orange and on-theme for tree work. Change this
+     one token to restyle every heading on the site. */
+  --color-heading: #14332b;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f7f6f3; /* Off-white section background */
+  /* Warm off-white behind the illustrated backdrops. Sampled FROM the artwork
+     itself (253,251,247): if this drifts from the artwork's paper tone, every
+     torn edge that flows into a parchment section shows a hard line where the
+     flat colour meets the image. */
+  --color-parchment: #fdfbf7;
+  --color-line: #e4e1db; /* Hairline borders and dividers */
+
+  --color-body: #3f3f3f; /* Body copy on light backgrounds */
+  --color-body-muted: #6f6f6f; /* Secondary / supporting copy */
+  --color-on-dark: #f2f2f2; /* Body copy on dark backgrounds */
+  --color-on-dark-muted: #c9c9c9;
+
+  /* --- Typography --- */
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  /* Decorative only — the "Tough Trees. Trusted Locally." brand lockup */
+  --font-script: var(--font-permanent-marker), cursive;
+
+  /* Fluid heading scale — one scale for the entire site (AGENTS.md §6) */
+  /* min() with a vh term keeps the headline from forcing the hero past one
+     screen on short viewports (AGENTS.md §13). */
+  --text-h1: min(clamp(2.5rem, 1.6rem + 3.4vw, 4.25rem), 9vh);
+  --text-h1--line-height: 1.04;
+  /* One step above h1, for full-viewport statement sections whose headline is
+     only two lines and needs to carry the space on its own. vh-capped like h1
+     so it cannot push the section past one screen. */
+  --text-display: min(clamp(2.5rem, 1.5rem + 3.9vw, 4.5rem), 10vh);
+  --text-display--line-height: 1.02;
+  --text-h2: clamp(1.875rem, 1.2rem + 2.7vw, 3rem);
+  --text-h2--line-height: 1.12;
+  --text-h3: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem);
+  --text-h3--line-height: 1.2;
+  --text-h4: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  --text-h4--line-height: 1.3;
+  --text-lead: clamp(1rem, 0.95rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+  /* Larger lede, for full-viewport statement sections */
+  --text-lead-lg: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
+  --text-lead-lg--line-height: 1.55;
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.4;
+
+  /* --- Layout --- */
+  --container-max: 1560px;
+  --spacing-section: 6rem; /* Desktop vertical rhythm */
+  --spacing-section-mobile: 3.5rem;
+
+  /* --- Components --- */
+  --radius-button: 9999px; /* Pill buttons, per reference */
+  --radius-card: 0.875rem;
+  --radius-pill: 9999px;
+
+  /* --- Motion (AGENTS.md §22) --- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-reveal: 800ms;
+  --duration-ui: 220ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ==================================================
+   02. RESET & BASE STYLES
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+   Everything below lives inside a Tailwind cascade layer on purpose.
+   Unlayered CSS outranks ALL layered CSS, so a component class written
+   outside a layer would silently beat every utility — `text-white` would
+   lose to `.heading-display`. Keep base rules in `base` and component
+   classes in `components` so utilities can always override them.
+   ================================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-body);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Keyboard focus ring, consistent across every interactive element */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Locks background scrolling while the mobile menu is open */
+  body[data-scroll-locked="true"] {
+    overflow: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* ==================================================
+     03. TYPOGRAPHY
+     ================================================== */
+
+  .heading-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--color-heading);
+  }
+
+  .heading-section {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--color-heading);
+  }
+
+  /* "Eastern Ontario" treatment — orange-to-gold gradient headline segment */
+  .heading-accent {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-brand) 0%,
+      var(--color-brand-light) 45%,
+      var(--color-gold) 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* Small uppercase label with a leading rule — "TREES • STUMPS • LAND CLEARING" */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-family: var(--font-display);
+    font-size: var(--text-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 3.25rem;
+    height: 2px;
+    background-color: var(--color-brand);
+    flex-shrink: 0;
+  }
+
+  /* Variant without the leading rule, per the storm response reference */
+  .eyebrow--plain::before {
+    content: none;
+  }
+
+  /* ==================================================
+     04. LAYOUT & CONTAINERS
+     ================================================== */
+
+  .container-site {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-site {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .section {
+    padding-block: var(--spacing-section-mobile);
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding-block: var(--spacing-section);
+    }
+  }
+
+  .section--muted {
+    background-color: var(--color-surface-muted);
+  }
+
+  .section--dark {
+    background-color: var(--color-ink);
+    color: var(--color-on-dark);
+  }
+
+  /* ==================================================
+     05. SHARED COMPONENTS
+     Buttons, cards, badges.
+     ================================================== */
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+    padding: 1.125rem 1.75rem;
+    border-radius: var(--radius-button);
+    border: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft),
+      color var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+  }
+
+  .button:active {
+    transform: translateY(0);
+  }
+
+  .button--primary {
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  .button--primary:hover {
+    background-color: var(--color-brand-dark);
+  }
+
+  /* Outlined button for use on dark/photographic backgrounds */
+  .button--outline {
+    border-color: rgba(255, 255, 255, 0.55);
+    color: #fff;
+  }
+
+  .button--outline:hover {
+    border-color: #fff;
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  /* Solid dark button, for use on light photographic backgrounds */
+  .button--dark {
+    background-color: var(--color-ink);
+    color: #fff;
+  }
+
+  .button--dark:hover {
+    background-color: var(--color-heading);
+  }
+
+  /* Outlined button for use on light backgrounds */
+  .button--outline-dark {
+    border-color: var(--color-ink);
+    color: var(--color-ink);
+  }
+
+  .button--outline-dark:hover {
+    background-color: var(--color-ink);
+    color: #fff;
+  }
+
+  /* Larger button, for full-viewport statement sections */
+  .button--lg {
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+    padding: 1.3rem 2.15rem;
+  }
+
+  /* Circular icon chip used beside stats and feature labels */
+  .icon-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    border: 1.5px solid var(--color-brand);
+    color: var(--color-brand);
+  }
+
+  /* Left-weighted darkening scrim over a full-bleed photograph, keeping copy on
+     the left legible. Shared by every photographic section. */
+  .media-scrim {
+    /* Scrim colour as an RGB triplet, so modifiers can retint the same ramp */
+    --scrim-rgb: 8, 8, 8;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(var(--scrim-rgb), 0.92) 0%,
+      rgba(var(--scrim-rgb), 0.78) 32%,
+      rgba(var(--scrim-rgb), 0.28) 58%,
+      rgba(var(--scrim-rgb), 0.05) 78%
+    );
+  }
+
+  /* Tints the scrim to the deep panel colour, so a photographic section reads
+     as continuous with the solid-colour sections around it. */
+  .media-scrim--deep {
+    --scrim-rgb: 15, 10, 6;
+  }
+
+  /* Adds a soft fill down the trailing edge and along the bottom, framing the
+     photograph on both sides rather than only behind the copy. */
+  .media-scrim--edges::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        270deg,
+        rgba(var(--scrim-rgb), 0.85) 0%,
+        rgba(var(--scrim-rgb), 0.3) 9%,
+        rgba(var(--scrim-rgb), 0) 22%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(var(--scrim-rgb), 0.5) 0%,
+        rgba(var(--scrim-rgb), 0) 16%,
+        rgba(var(--scrim-rgb), 0) 72%,
+        rgba(var(--scrim-rgb), 0.9) 100%
+      );
+  }
+
+  /* Extra top fade for sections sitting under the transparent site header. */
+  .media-scrim--under-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(8, 8, 8, 0.7) 0%, rgba(8, 8, 8, 0) 28%);
+  }
+
+  /* Torn paper edge bridging a dark section into the white one below. Supplied
+     as a cut-out layer; its colour must match the section that follows it.
+     (Asset is named hero-torn-edge for historical reasons — it is shared.) */
+  .torn-edge {
+    /* Colour of the section this edge flows INTO. White by default; sections
+       that sit above a parchment panel override it. Painting the wrong colour
+       here is what leaves a hard white line under the tear. */
+    --torn-color: var(--color-surface);
+    position: absolute;
+    left: 0;
+    right: 0;
+    /* -1px avoids a hairline gap from sub-pixel rounding */
+    bottom: -1px;
+    height: clamp(1.75rem, 4vw, 4.5rem);
+    background-color: var(--torn-color);
+    /* Used as a mask rather than a background image, so the one white asset
+       can be recoloured per section instead of needing a variant each time. */
+    -webkit-mask: url('/assets/hero-torn-edge.webp') bottom center / 100% 100% no-repeat;
+    mask: url('/assets/hero-torn-edge.webp') bottom center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  /* Tear drawn at the TOP of the light section instead of the bottom of the
+     dark one. The light section's backdrop artwork then runs continuously up
+     to the ragged boundary — filling the tear with a flat colour instead
+     leaves a strip of plain colour that reads as a hard line against the
+     texture below it, which is what a bottom-mounted tear does. */
+  .torn-edge-top {
+    --torn-color: var(--color-ink-deep);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    z-index: 1;
+    height: clamp(1.75rem, 4vw, 4.5rem);
+    background-color: var(--torn-color);
+    -webkit-mask: url('/assets/torn-edge-top.webp') top center / 100% 100% no-repeat;
+    mask: url('/assets/torn-edge-top.webp') top center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  /* Sections that flow into a parchment panel */
+  .services-intro .torn-edge,
+  .leaning-tree .torn-edge {
+    --torn-color: var(--color-parchment);
+  }
+
+  /* The contact plate's pale sky is a touch lighter than flat parchment */
+  .reviews .torn-edge {
+    --torn-color: var(--color-parchment);
+  }
+
+  /* Angled photo card — the two stacked hero photos in the reference */
+  .photo-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.25rem;
+    border: 6px solid #fff;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Handwritten-style caption tag pinned under each hero photo */
+  .photo-tag {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.6875rem;
+    line-height: 1.25;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    background-color: var(--color-gold);
+    padding: 0.4rem 0.7rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+  }
+
+  /* ==================================================
+     06. HEADER & NAVIGATION
+     ================================================== */
+
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  /* Solid state once the user scrolls past the hero headline */
+  .site-header--scrolled {
+    background-color: rgba(13, 13, 13, 0.92);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  }
+
+  .site-header__link {
+    position: relative;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1rem;
+    color: #fff;
+    padding-block: 0.5rem;
+    transition: color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-header__link:hover {
+    color: var(--color-gold);
+  }
+
+  /* Animated underline; scales out on hover and for the active route */
+  .site-header__link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-brand);
+    transform: scaleX(0);
+    transition: transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-header__link:hover::after,
+  .site-header__link[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+
+  .site-header__dropdown-link {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    padding: 0.75rem 1.125rem;
+    border-radius: 0.5rem;
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-header__dropdown-link:hover,
+  .site-header__dropdown-link[data-active="true"] {
+    background-color: var(--color-surface-muted);
+    color: var(--color-brand);
+  }
+
+  /* ==================================================
+     07. PAGE SECTIONS
+     ================================================== */
+
+  /* Hero: full-bleed photograph with a left-weighted darkening gradient so the
+     headline stays legible over the sky.
+
+     Sized to exactly one viewport. `svh` is the small-viewport unit, so mobile
+     browsers with a retracting address bar do not push the bottom of the hero
+     out of view. Content padding is fluid so the whole section keeps fitting
+     as the viewport shortens, rather than being clipped. */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100svh;
+    overflow: hidden;
+  }
+
+  /* Padding and the inset photos are both sized in `vh`, so the hero's contents
+     shrink together as the viewport shortens and the section keeps fitting one
+     screen instead of overflowing it. */
+  .hero__content {
+    padding-top: clamp(4.25rem, 11vh, 8rem);
+    /* Bottom padding clears the torn edge overlay so text never sits on it. */
+    padding-bottom: clamp(3rem, 9vh, 7rem);
+  }
+
+  .hero__photo {
+    width: clamp(140px, 21vh, 212px);
+  }
+
+  /* Vertical rhythm inside the hero copy. Also expressed in vh so the stack
+     compresses on short screens instead of pushing past one viewport. */
+  .hero__headline {
+    margin-top: clamp(0.6rem, 1.8vh, 1.25rem);
+  }
+
+  .hero__lede {
+    margin-top: clamp(0.7rem, 2vh, 1.5rem);
+  }
+
+  .hero__actions {
+    margin-top: clamp(0.85rem, 3vh, 2rem);
+  }
+
+  .hero__stats {
+    margin-top: clamp(0.9rem, 3.2vh, 2.25rem);
+  }
+
+
+  /* Services intro: a flat dark panel with the photograph occupying the
+     top-right, and a solid full-width service strip along the bottom.
+
+     The photograph is deliberately NOT a full-bleed background. It is inset to
+     the right and melted into the flat colour on its left and lower edges, so
+     the copy sits on solid colour rather than on the image. */
+  .services-intro {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-ink-deep);
+  }
+
+  /* Shared photo panel: flat dark surface with the photograph inset to the
+     right and melted into the colour on its left and lower edges, so copy on
+     the left sits on solid colour. Used by the services intro and the storm
+     response section. */
+  .photo-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: clamp(23rem, 38vw, 34rem);
+  }
+
+  /* Below lg the photo fills the panel and the scrim alone carries legibility;
+     from lg it occupies the right-hand portion, as in the reference. */
+  .photo-panel__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .photo-panel__media {
+      left: 40%;
+    }
+  }
+
+  /* Melts the photograph into the flat panel on its left edge and along the
+     bottom, so the two read as one surface instead of a pasted rectangle. */
+  .photo-panel__fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        90deg,
+        var(--color-ink-deep) 0%,
+        rgba(15, 10, 6, 0.85) 14%,
+        rgba(15, 10, 6, 0.4) 30%,
+        rgba(15, 10, 6, 0.08) 50%,
+        rgba(15, 10, 6, 0) 66%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(15, 10, 6, 0) 52%,
+        rgba(15, 10, 6, 0.5) 82%,
+        var(--color-ink-deep) 100%
+      );
+  }
+
+  /* Solid bar carrying the five services, full width edge to edge. */
+  .services-intro__strip {
+    position: relative;
+    background-color: var(--color-ink-deep);
+    border-top: 1px solid rgba(255, 255, 255, 0.11);
+    padding-top: clamp(2rem, 3.5vw, 2.75rem);
+    /* Clears the torn edge pinned to the bottom of the section */
+    padding-bottom: clamp(4.5rem, 7vw, 6.5rem);
+  }
+
+  .service-strip__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-inline: 0.5rem;
+  }
+
+  /* Hairline dividers between items, once they sit on a single row */
+  @media (min-width: 768px) {
+    .service-strip__item + .service-strip__item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background-color: rgba(255, 255, 255, 0.13);
+    }
+  }
+
+  /* Tough jobs: full-bleed photograph framed left and right by the same deep
+     panel colour as the service strip, with the copy on the filled left side. */
+  .tough-jobs {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    min-height: 100svh;
+    background-color: var(--color-ink-deep);
+  }
+
+  /* Fluid like the hero, so the section keeps fitting one screen as the
+     viewport shortens rather than overflowing it. */
+  .tough-jobs__content {
+    padding-top: clamp(5rem, 12vh, 9rem);
+    padding-bottom: clamp(4.5rem, 11vh, 8rem);
+  }
+
+  /* ---------- Modal ---------- */
+
+  /* The overlay is the scroll container, not the panel — a tall dialog scrolls
+     the whole screen rather than showing a scrollbar inside itself. The panel
+     uses margin:auto so it stays centred when there is room and keeps its top
+     reachable when there is not (which align-items:center alone would clip). */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(0.75rem, 3vw, 2rem);
+    background-color: rgba(6, 5, 4, 0);
+    backdrop-filter: blur(0);
+    transition:
+      background-color 320ms var(--ease-out-soft),
+      backdrop-filter 320ms var(--ease-out-soft);
+    /* Scroll without the chrome; the panel fits on virtually every screen */
+    scrollbar-width: none;
+  }
+
+  .modal-overlay::-webkit-scrollbar {
+    display: none;
+  }
+
+  .modal-overlay[data-open='true'] {
+    background-color: rgba(6, 5, 4, 0.76);
+    backdrop-filter: blur(6px);
+  }
+
+  .modal-panel {
+    position: relative;
+    width: 100%;
+    max-width: 70rem;
+    /* No inner scrolling: overflow:hidden only clips the photograph to the
+       panel's rounded corners. Height is free, and the overlay scrolls. */
+    margin: auto;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--color-ink-deep);
+    box-shadow: 0 48px 110px rgba(0, 0, 0, 0.68);
+    /* Resting state doubles as the exit: leaving is quicker and drops away,
+       arriving is slower and eases out of the overshoot. */
+    transform: translateY(14px) scale(0.965);
+    opacity: 0;
+    transition:
+      transform 240ms cubic-bezier(0.4, 0, 1, 1),
+      opacity 180ms ease-in;
+  }
+
+  .modal-overlay[data-open='true'] .modal-panel {
+    transform: none;
+    opacity: 1;
+    transition:
+      transform 520ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 340ms ease-out;
+  }
+
+  /* Content settles a beat after the panel, so the dialog reads as one motion
+     rather than everything snapping in together. */
+  .modal-panel > * {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 200ms ease-in,
+      transform 200ms ease-in;
+  }
+
+  .modal-overlay[data-open='true'] .modal-panel > * {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 420ms var(--ease-out-soft) 120ms,
+      transform 480ms var(--ease-out-soft) 120ms;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.1rem;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.94);
+    color: var(--color-ink-deep);
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .modal-close:hover {
+    background-color: #fff;
+    transform: rotate(90deg);
+  }
+
+  /* Torn edge biting the panel colour into the photograph's right edge.
+     Uses the shared torn edge asset, rotated so it runs vertically. */
+  .modal-media__edge {
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    right: -1px;
+    width: clamp(1.25rem, 3vw, 2.5rem);
+    background-color: var(--color-ink-deep);
+    -webkit-mask: url('/assets/torn-edge-right.webp') center / 100% 100% no-repeat;
+    mask: url('/assets/torn-edge-right.webp') center / 100% 100% no-repeat;
+  }
+
+  /* ---------- Fields on dark surfaces ---------- */
+
+  .field-dark {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    border-radius: 0.625rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background-color: rgba(255, 255, 255, 0.06);
+    padding: 1.05rem 1.15rem;
+    text-align: left;
+    transition:
+      border-color var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .field-dark:hover {
+    border-color: rgba(249, 115, 22, 0.55);
+  }
+
+  .field-dark:focus-within,
+  .field-dark[data-open='true'] {
+    border-color: var(--color-brand);
+    background-color: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+  }
+
+  .field-dark__icon {
+    flex-shrink: 0;
+    color: var(--color-brand);
+  }
+
+  .field-dark__input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .field-dark__input::placeholder {
+    color: var(--color-on-dark-muted);
+  }
+
+  /* ---------- Custom select ---------- */
+
+  .select-menu {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    right: 0;
+    z-index: 5;
+    overflow: hidden auto;
+    max-height: 15rem;
+    border-radius: 0.625rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: #171210;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55);
+    transform-origin: top;
+    transform: scaleY(0.96) translateY(-4px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 200ms var(--ease-out-soft),
+      transform 200ms var(--ease-out-soft),
+      visibility 200ms;
+  }
+
+  .select-menu[data-open='true'] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .select-option {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    text-align: left;
+    font-size: 1rem;
+    color: var(--color-on-dark);
+    cursor: pointer;
+    transition:
+      background-color 140ms var(--ease-out-soft),
+      color 140ms var(--ease-out-soft);
+  }
+
+  .select-option[data-active='true'] {
+    background-color: rgba(249, 115, 22, 0.16);
+    color: #fff;
+  }
+
+  .select-option[data-selected='true'] {
+    color: var(--color-brand);
+    font-weight: 600;
+  }
+
+  /* Contact: full-bleed sunset plate carrying the copy and the quote form. */
+  .contact {
+    position: relative;
+    display: flex;
+    align-items: center;
+    isolation: isolate;
+    overflow: hidden;
+    /* Keeps the plate close to its own 1.22 aspect so the sunset and the
+       treeline both stay in frame rather than being cropped to a letterbox. */
+    min-height: clamp(34rem, 60vw, 54rem);
+    background-color: var(--color-parchment);
+  }
+
+  .contact__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    object-fit: cover;
+    /* Anchored to the bottom so the treeline, sunset and the plate's own
+       dark band always sit on the section's lower edge — the join into the
+       footer then reads as continuous. All cropping is taken off the top,
+       where the artwork is empty sky, so no tree is sliced mid-trunk. */
+    object-position: center bottom;
+  }
+
+  /* Three jobs, bottom layer first:
+       1. a white bleed along the very top, so the torn edge of the section
+          above melts into the plate instead of leaving a hard seam;
+       2. a wash anchored top-left, keeping the copy on light ground however
+          the plate crops — without it the address and 'Free Estimates' lines
+          sit on the sunset and disappear;
+       3. a fallback join into the footer for crops that trim the plate's own
+          dark band. */
+  .contact__fade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to bottom, #fdfbf7 0%, rgba(253, 251, 247, 0.72) 3%, rgba(253, 251, 247, 0) 9%),
+      radial-gradient(
+        122% 128% at 0% 4%,
+        rgba(253, 251, 247, 0.97) 0%,
+        rgba(253, 251, 247, 0.9) 32%,
+        rgba(253, 251, 247, 0.44) 54%,
+        rgba(253, 251, 247, 0) 74%
+      ),
+      linear-gradient(to bottom, rgba(15, 10, 6, 0) 92%, var(--color-ink-deep) 100%);
+  }
+
+  /* Contact detail: orange glyph on a dark disc */
+  .contact-point__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background-color: var(--color-ink-deep);
+    color: var(--color-brand);
+  }
+
+  /* Quote form card */
+  .quote-card {
+    border-radius: 1.25rem;
+    background-color: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 24px 60px rgba(20, 51, 43, 0.22);
+    backdrop-filter: blur(4px);
+  }
+
+  .form-field {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface-muted);
+    padding: 0.875rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--color-heading);
+    transition:
+      border-color var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .form-field::placeholder {
+    color: var(--color-body-muted);
+  }
+
+  .form-field:hover {
+    border-color: var(--color-brand-light);
+  }
+
+  .form-field:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    background-color: var(--color-surface);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+  }
+
+  .form-field[aria-invalid='true'] {
+    border-color: #c0392b;
+  }
+
+  /* Footer */
+  .site-footer {
+    background-color: var(--color-ink-deep);
+    color: var(--color-on-dark);
+  }
+
+  .site-footer__link {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--color-on-dark);
+    transition: color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-footer__link:hover,
+  .site-footer__link[data-active='true'] {
+    color: var(--color-brand);
+  }
+
+  .site-footer__social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    color: #fff;
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-footer__social:hover {
+    background-color: var(--color-brand);
+    transform: translateY(-3px);
+  }
+
+  .site-footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Reviews: dark section over the stump backdrop, carrying the rating badge,
+     a Swiper carousel of reviews and the contact strip. */
+  .reviews {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--color-ink-deep);
+  }
+
+  .reviews__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    object-fit: cover;
+    /* Anchored to the top: the source has a white torn edge baked along its
+       lower edge, which the crop removes so .torn-edge can close the section
+       cleanly across the full width. */
+    object-position: center top;
+  }
+
+  /* Darkens the photograph so the cards and copy hold up over it */
+  .reviews__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(15, 10, 6, 0.82) 0%,
+        rgba(15, 10, 6, 0.7) 45%,
+        rgba(15, 10, 6, 0.94) 92%,
+        var(--color-ink-deep) 100%
+      );
+  }
+
+  /* Eyebrow with a rule on both sides, centred */
+  .eyebrow--centered::after {
+    content: '';
+    width: 3.25rem;
+    height: 2px;
+    background-color: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Rating badge pill */
+  .rating-badge {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1.25rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(15, 10, 6, 0.72);
+    backdrop-filter: blur(6px);
+  }
+
+  .rating-badge__divider {
+    width: 1px;
+    align-self: stretch;
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+
+  /* Review card */
+  .review-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-card);
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    background-color: rgba(255, 255, 255, 0.055);
+    padding: 1.25rem;
+    backdrop-filter: blur(4px);
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .review-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(249, 115, 22, 0.55);
+    background-color: rgba(255, 255, 255, 0.09);
+  }
+
+  /* Circular thumbnail beside the reviewer's name. Holds a job-site
+     photograph rather than a portrait — see the note in ReviewsSection. */
+  .review-card__avatar {
+    position: relative;
+    width: 3.5rem;
+    height: 3.5rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 9999px;
+    border: 2px solid var(--color-brand);
+  }
+
+  /* Carousel navigation arrows */
+  .reviews__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background-color: rgba(15, 10, 6, 0.7);
+    color: #fff;
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .reviews__nav:hover:not(:disabled) {
+    background-color: var(--color-brand);
+    border-color: var(--color-brand);
+    transform: scale(1.08);
+  }
+
+  .reviews__nav:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* Swiper pagination, themed to the brand */
+  .reviews .swiper-pagination-bullet {
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.35);
+    opacity: 1;
+    transition:
+      width var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .reviews .swiper-pagination-bullet-active {
+    width: 1.5rem;
+    border-radius: 9999px;
+    background-color: var(--color-brand);
+  }
+
+  /* Contact strip below the carousel */
+  .reviews__contact {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* FAQ: light section over the full-bleed crew photograph, which already
+     fades to white on its left so the accordion sits on clean ground. */
+  .faq {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  .faq__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    object-fit: cover;
+    object-position: right center;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-line);
+    border-radius: 0.625rem;
+    background-color: rgba(255, 255, 255, 0.82);
+    transition:
+      border-color var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .faq-item:hover {
+    border-color: var(--color-brand);
+    background-color: #fff;
+    transform: translateX(4px);
+    box-shadow: 0 8px 22px rgba(20, 51, 43, 0.1);
+  }
+
+  .faq-item[data-open='true'] {
+    border-color: var(--color-brand);
+    background-color: #fff;
+    box-shadow: 0 10px 28px rgba(20, 51, 43, 0.12);
+  }
+
+  .faq-item__question {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-heading);
+    transition: color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .faq-item:hover .faq-item__question,
+  .faq-item[data-open='true'] .faq-item__question {
+    color: var(--color-brand);
+  }
+
+  /* Plus that morphs into a minus: the vertical bar rotates and collapses */
+  .faq-toggle {
+    position: relative;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--color-brand);
+  }
+
+  .faq-toggle::before,
+  .faq-toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 2px;
+    background-color: currentColor;
+    transition: transform 320ms var(--ease-out-soft);
+  }
+
+  .faq-toggle::before {
+    width: 100%;
+    height: 2px;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq-toggle::after {
+    width: 2px;
+    height: 100%;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq-item[data-open='true'] .faq-toggle::after {
+    transform: translate(-50%, -50%) rotate(90deg) scaleY(0);
+  }
+
+  /* Height animation without measuring: 0fr -> 1fr on a grid row.
+     See AGENTS.md §22 rule 11. */
+  .faq-item__body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 340ms var(--ease-out-soft);
+  }
+
+  .faq-item[data-open='true'] .faq-item__body {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item__body > div {
+    overflow: hidden;
+  }
+
+  .faq-item__answer {
+    padding: 0 1.125rem 1.125rem;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition:
+      opacity 280ms var(--ease-out-soft),
+      transform 280ms var(--ease-out-soft);
+  }
+
+  .faq-item[data-open='true'] .faq-item__answer {
+    opacity: 1;
+    transform: none;
+    transition-delay: 90ms;
+  }
+
+  /* Job flow: dark section over a near-black forest backdrop, carrying six
+     numbered step cards. */
+  .job-flow {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--color-ink-deep);
+  }
+
+  .job-flow__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.55;
+  }
+
+  /* Step card: photograph above, copy on a lifted dark panel below */
+  .job-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.045);
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft),
+      background-color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .job-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(249, 115, 22, 0.55);
+    background-color: rgba(255, 255, 255, 0.075);
+  }
+
+  /* Process: light section on the shared parchment backdrop, with four
+     numbered steps. */
+  .process {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-parchment);
+  }
+
+  /* Rounded step photograph */
+  .process-step__photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    box-shadow: 0 10px 26px rgba(20, 51, 43, 0.16);
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .group:hover .process-step__photo {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 44px rgba(20, 51, 43, 0.26);
+  }
+
+  /* Numbered badge beside each step title */
+  .process-step__number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background-color: var(--color-brand);
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  /* Leaning tree: dark section with a full-bleed photograph, copy on the left
+     and an angled crew photo on the right, closing with the shared torn edge. */
+  .leaning-tree {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-ink-deep);
+  }
+
+  /* Settles the photograph onto solid colour at the base, so the tear cut into
+     the section below has a flat edge to meet. */
+  .leaning-tree::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: clamp(4rem, 9vw, 8rem);
+    background: linear-gradient(to bottom, rgba(15, 10, 6, 0) 0%, var(--color-ink-deep) 82%);
+    pointer-events: none;
+  }
+
+  /* Numbered-feel step, marked by a rule in the brand colour */
+  .step-item {
+    border-left: 3px solid var(--color-brand);
+    padding-left: 1.125rem;
+  }
+
+  /* Service area: full-bleed illustrated map plate. The artwork already
+     carries the map, pins and shoreline, so the section only supplies a wash
+     at the top-left corner to keep the copy legible if the crop shifts. */
+  .service-area {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
+    min-height: clamp(30rem, 58vw, 50rem);
+    background-color: var(--color-parchment);
+  }
+
+  .service-area__scrim {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      125% 105% at 0% 0%,
+      rgba(253, 251, 247, 0.97) 0%,
+      rgba(253, 251, 247, 0.86) 28%,
+      rgba(253, 251, 247, 0.38) 50%,
+      rgba(253, 251, 247, 0) 72%
+    );
+  }
+
+  /* Storm response: dark section built on the shared photo panel, with a
+     three-image gallery beneath it. */
+  .storm-response {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-ink-deep);
+  }
+
+  .storm-gallery__figure {
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Machinery: light section over the pale illustrated backdrop, with a grid of
+     equipment cards. Shares the backdrop treatment with .properties-served. */
+  .machinery {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-parchment);
+  }
+
+  /* Equipment card: photograph above, copy on a white panel below */
+  .machinery-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    box-shadow: 0 6px 18px rgba(20, 51, 43, 0.07);
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .machinery-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(20, 51, 43, 0.18);
+  }
+
+  /* Properties served: light section over a pale illustrated backdrop
+     (tree line along the bottom, branch in the top-right corner). */
+  .properties-served {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-parchment);
+  }
+
+  /* Shared by every parchment section. The backdrop is artwork, not a
+     photograph: anchored to the bottom so the tree line stays on the bottom
+     edge, with the flat parchment behind filling any remaining space. */
+  .section-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    object-fit: cover;
+    object-position: bottom center;
+  }
+
+  /* Rounded photograph beside each property type */
+  .property-card__photo {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 24px rgba(20, 51, 43, 0.14);
+  }
+
+  /* ==================================================
+     08. FOOTER
+     Reserved — no approved footer design supplied yet.
+     ================================================== */
+
+  /* ==================================================
+     09. MOTION & ANIMATION
+     Shared reveal system used by every section (AGENTS.md §22).
+     Elements start hidden and animate once when scrolled into view.
+     ================================================== */
+
+  .reveal {
+    opacity: 0;
+  }
+
+  .reveal[data-visible="true"] {
+    animation: fade-up var(--duration-reveal) var(--ease-out-soft) forwards;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+
+  .reveal--fade[data-visible="true"] {
+    animation-name: fade-in;
+  }
+
+  /* --- Word-by-word text reveal --- */
+  .text-reveal__word {
+    display: inline-flex;
+    overflow: hidden;
+    vertical-align: bottom;
+    /* Prevents descenders (g, y) being clipped by the mask */
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  /* Whole-phrase mask. inline-block (not flex) so the phrase can still wrap;
+     every line rises together. Used for gradient segments. */
+  .text-reveal__block {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+
+  .text-reveal__word-inner {
+    display: inline-block;
+    transform: translateY(110%);
+    will-change: transform;
+  }
+
+  .text-reveal[data-visible="true"] .text-reveal__word-inner {
+    animation: word-rise 900ms var(--ease-out-soft) forwards;
+    /* Each word is offset by its index, set inline as --word-index */
+    animation-delay: calc(var(--reveal-delay, 0ms) + var(--word-index) * 55ms);
+  }
+
+  /* --- Hero background drift --- */
+  .hero__image {
+    animation: zoom-out-slow 1600ms var(--ease-out-soft) both;
+  }
+}
+
+/* ==================================================
+   10. KEYFRAMES
+   Declared outside any layer — keyframes are not subject
+   to the cascade and must resolve globally.
+   ================================================== */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out-slow {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Word mask reveal — each word slides up from behind its own clipping box */
+@keyframes word-rise {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ==================================================
+   11. REDUCED MOTION
+   Honour the OS setting by jumping straight to the
+   final state. Unlayered so it wins over the animation
+   rules above regardless of layer order.
+   ================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal,
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    animation: none;
+  }
+
+  .text-reveal__word-inner,
+  .text-reveal[data-visible="true"] .text-reveal__word-inner {
+    transform: none;
+    animation: none;
+  }
+
+  .hero__image {
+    animation: none;
+  }
+
+  .button:hover {
+    transform: none;
+  }
+
+  /* Property card hover lift and photo zoom */
+  .property-card__photo,
+  .property-card__photo img {
+    transition: none;
+    transform: none;
+  }
+
+  /* Modal: appear in place, no scale-in or spin */
+  .modal-overlay,
+  .modal-overlay[data-open='true'],
+  .modal-panel,
+  .modal-overlay[data-open='true'] .modal-panel,
+  .modal-panel > *,
+  .modal-overlay[data-open='true'] .modal-panel > *,
+  .modal-close,
+  .modal-close:hover,
+  .select-menu {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Contact and footer: no hover motion */
+  .site-footer__social,
+  .site-footer__social:hover {
+    transition: none;
+    transform: none;
+  }
+
+  /* Reviews: no hover lift or arrow scaling */
+  .review-card,
+  .review-card:hover,
+  .reviews__nav,
+  .reviews__nav:hover:not(:disabled) {
+    transition: none;
+    transform: none;
+  }
+
+  /* FAQ accordion: open and close instantly, no hover shift.
+     The toggle keeps its transforms — they position and morph the icon
+     rather than animate it. */
+  .faq-item,
+  .faq-item:hover,
+  .faq-item__body,
+  .faq-item__answer,
+  .faq-toggle::before,
+  .faq-toggle::after {
+    transition: none;
+  }
+
+  .faq-item:hover,
+  .faq-item__answer {
+    transform: none;
+  }
+
+  /* Job card hover lift and photo zoom */
+  .job-card,
+  .job-card:hover,
+  .job-card img {
+    transition: none;
+    transform: none;
+  }
+
+  /* Process step hover lift */
+  .process-step__photo,
+  .group:hover .process-step__photo,
+  .process-step__photo img {
+    transition: none;
+    transform: none;
+  }
+
+  /* Machinery card hover lift and photo zoom */
+  .machinery-card,
+  .machinery-card:hover,
+  .machinery-card img {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ==================================================
+   12. THIRD-PARTY OVERRIDES  (deliberately unlayered)
+
+   Swiper ships its CSS unlayered, and unlayered rules outrank everything
+   inside @layer — the same trap described in section 02. Overrides for it
+   must therefore sit outside any layer to win, so they live here rather
+   than with the rest of the review styles.
+   ================================================== */
+
+/* Equal-height cards: stretch every slide to the tallest in view, and let
+   the card fill the slide regardless of how long the quote is. */
+.reviews .swiper-wrapper {
+  align-items: stretch;
+}
+
+.reviews .swiper-slide {
+  display: flex;
+  height: auto;
+}
+
+.reviews .swiper-slide > * {
+  flex: 1;
+  width: 100%;
+}
+
+/* Slide transition: cards off-stage sit scaled back, dimmed and softly
+   blurred, then settle as they come into view. Needs watchSlidesProgress
+   on the Swiper instance for .swiper-slide-visible to be applied.
+
+   Scoped to .swiper-initialized, and written as :not(visible) rather than
+   dimming every slide by default. Before Swiper boots — or if its JS never
+   runs — the cards render plainly instead of sitting invisible. */
+.reviews .swiper-initialized .swiper-slide {
+  transition:
+    opacity 600ms var(--ease-out-soft),
+    transform 600ms var(--ease-out-soft),
+    filter 600ms var(--ease-out-soft);
+}
+
+.reviews .swiper-initialized .swiper-slide:not(.swiper-slide-visible) {
+  opacity: 0.18;
+  transform: scale(0.9);
+  /* blur(3px) is safe; it is blur(0px) that the minifier breaks into blur() */
+  filter: blur(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reviews .swiper-initialized .swiper-slide,
+  .reviews .swiper-initialized .swiper-slide:not(.swiper-slide-visible) {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
 }
