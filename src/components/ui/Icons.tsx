@@ -317,3 +317,135 @@ export function TreeIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+/* Filled shield with a knocked-out check — the trust badge on the about hero.
+   The tick is stroked in the surface colour so it reads as a cut-out at any
+   size, rather than needing a second, lighter icon. */
+export function ShieldCheckIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 2.1 4.4 5.2v6.1c0 4.5 3 8.6 7.6 10.6 4.6-2 7.6-6.1 7.6-10.6V5.2Z"
+      />
+      <path
+        fill="none"
+        stroke="var(--color-surface)"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m8.2 11.9 2.6 2.6 5-5.4"
+      />
+    </svg>
+  );
+}
+
+/* Walking figure — "walks your property" on the about page. */
+export function WalkIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <circle fill="currentColor" cx="13.4" cy="4" r="2" />
+      <path {...strokeProps} d="M13.6 7.8 11 9.8l-.8 3.4 2 1.8" />
+      <path {...strokeProps} d="m11.8 10.4 3.4 1.4" />
+      <path {...strokeProps} d="m12.2 15 -1.6 2.6L8.4 21" />
+      <path {...strokeProps} d="m12.2 15 2.4 2.2 1 3.8" />
+    </svg>
+  );
+}
+
+/* Hard hat — "on site doing the work" on the about page. */
+export function HardHatIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path {...strokeProps} d="M3.8 16.4v-1.8a8.2 8.2 0 0 1 16.4 0v1.8" />
+      <path {...strokeProps} d="M9.4 7.6V5.2c0-.7.6-1.3 1.3-1.3h2.6c.7 0 1.3.6 1.3 1.3v2.4" />
+      <rect {...strokeProps} x="2.4" y="16.4" width="19.2" height="3.4" rx="1.7" />
+    </svg>
+  );
+}
+
+/* Roped climber working a spar — "skilled climbers" on the about page. */
+export function ClimberIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      {/* Trunk and the rope running down it */}
+      <path {...strokeProps} d="M18.6 2.4v19.2" />
+      <path {...strokeProps} d="M18.6 6.4 13 9.8" />
+      <circle fill="currentColor" cx="9.6" cy="5.4" r="2" />
+      <path {...strokeProps} d="M9.8 9.2 7.4 11.6l.6 3.4" />
+      <path {...strokeProps} d="M8.6 10.4 13 9.8" />
+      <path {...strokeProps} d="m8 15 -2.6 2.6.8 3.8" />
+      <path {...strokeProps} d="m8 15 3 2 .8 4.4" />
+    </svg>
+  );
+}
+
+/* Ground-level stump — "dependable ground crew" on the about page. */
+export function StumpIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <ellipse {...strokeProps} cx="12" cy="8.4" rx="6.6" ry="3" />
+      <ellipse {...strokeProps} cx="12" cy="8.4" rx="2.8" ry="1.2" />
+      <path {...strokeProps} d="M5.4 8.4v4.4c0 1.7 3 3 6.6 3s6.6-1.3 6.6-3V8.4" />
+      <path {...strokeProps} d="M4.6 20.6c1.8-1 2.8-2.4 3.2-4.2M19.4 20.6c-1.8-1-2.8-2.4-3.2-4.2M12 21v-5.2" />
+    </svg>
+  );
+}
+
+/* Three-person crew — "the same faces" on the about page. */
+export function CrewIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <circle fill="currentColor" cx="12" cy="7.6" r="2.6" />
+      <circle fill="currentColor" cx="4.8" cy="9" r="2.1" />
+      <circle fill="currentColor" cx="19.2" cy="9" r="2.1" />
+      <path {...strokeProps} d="M7.2 18.6a4.8 4.8 0 0 1 9.6 0" />
+      <path {...strokeProps} d="M1.6 17.4a3.4 3.4 0 0 1 3.9-3.3M22.4 17.4a3.4 3.4 0 0 0-3.9-3.3" />
+    </svg>
+  );
+}
+
+/* Two hands meeting — "here when you need us" on the about page. */
+export function HandshakeIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path {...strokeProps} d="M2.4 9.2 6 7.4l4.2 2.2a2 2 0 0 1 .7 2.9l-.2.2a1.9 1.9 0 0 1-2.7.2L6.2 11.6" />
+      <path {...strokeProps} d="m21.6 9.2-3.6-1.8-4 2.1" />
+      <path {...strokeProps} d="m11.4 12.6 2 1.7M9.8 14.6l1.9 1.6M8.2 16.6l1.7 1.5" />
+      <path {...strokeProps} d="M14 9.5l4 3.6a1.9 1.9 0 0 1-2.5 2.8" />
+      <path {...strokeProps} d="M2.4 9.2v5.4l2.2 1.2M21.6 9.2v5.4l-2.2 1.2" />
+    </svg>
+  );
+}
+
+/* Small north marker for the service-area map plate. */
+export function NorthArrowIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path fill="currentColor" d="M12 4.5 17 19l-5-3.6L7 19Z" />
+    </svg>
+  );
+}
+
+/* Tracked excavator — the land-clearing label on the about page. */
+export function ExcavatorIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <rect {...strokeProps} x="2.2" y="16.8" width="19.6" height="4.4" rx="2.2" />
+      <path {...strokeProps} d="M12.6 16.8v-4.2a1.4 1.4 0 0 1 1.4-1.4h4.6a1.4 1.4 0 0 1 1.4 1.4v4.2" />
+      <path {...strokeProps} d="m13.6 11.2-3-6.4M10.6 4.8 4.4 9.4l.6 3.6" />
+      <path {...strokeProps} d="M3 13h4.2l-1 3.8H2.6Z" />
+    </svg>
+  );
+}
+
+/* Wind gusts — the storm-cleanup label on the about page. */
+export function WindIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path {...strokeProps} d="M2.6 8.4h11a2.6 2.6 0 1 0-2.6-2.6" />
+      <path {...strokeProps} d="M2.6 12.4h15.2a2.6 2.6 0 1 1-2.6 2.6" />
+      <path {...strokeProps} d="M2.6 16.6h7.8a2.4 2.4 0 1 1-2.4 2.4" />
+    </svg>
+  );
+}

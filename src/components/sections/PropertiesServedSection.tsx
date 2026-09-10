@@ -93,7 +93,7 @@ export function PropertiesServedSection() {
             return (
               <li key={property.title}>
                 <Reveal delay={index * 110} className="group flex items-center gap-6">
-                  <div className="property-card__photo aspect-[4/3] w-[52%] max-w-[400px] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_44px_rgba(20,51,43,0.26)] sm:w-[55%]">
+                  <div className="photo-frame aspect-[4/3] w-[52%] max-w-[400px] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-[0_20px_44px_rgba(20,51,43,0.26)] sm:w-[55%]">
                     <Image
                       src={property.image}
                       alt={property.alt}

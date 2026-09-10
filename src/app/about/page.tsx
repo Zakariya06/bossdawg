@@ -1,30 +1,42 @@
 /**
- * ABOUT BOSSDAWG PAGE
- * Purpose: A local Eastern Ontario crew built on safe work, tidy sites and straight answers.
+ * ABOUT PAGE
+ * Purpose: A local Southeast Ontario crew built on safe work, tidy sites and
+ * straight answers.
  *
- * STUB — route exists so the navigation works end to end. Replace
- * <PagePlaceholder /> with real sections once the design is approved.
+ * Composed from shared section components, in visual order. The remaining
+ * sections are still to be designed; the hero and services bar are live.
  */
 
 import type { Metadata } from "next";
 
-import { PageHeader } from "@/components/sections/PageHeader";
-import { PagePlaceholder } from "@/components/sections/PagePlaceholder";
+import { AboutHeroSection } from "@/components/sections/AboutHeroSection";
+import { AboutServicesBar } from "@/components/sections/AboutServicesBar";
+import { MeetOwnerSection } from "@/components/sections/MeetOwnerSection";
+import { TeamSection } from "@/components/sections/TeamSection";
+import { AboutServiceAreaSection } from "@/components/sections/AboutServiceAreaSection";
+import { OurWorkSection } from "@/components/sections/OurWorkSection";
+import { FaqSection } from "@/components/sections/FaqSection";
+import { ReviewsSection } from "@/components/sections/ReviewsSection";
+import { ContactSection } from "@/components/sections/ContactSection";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "A local Eastern Ontario crew built on safe work, tidy sites and straight answers.",
+  description:
+    "Trusted local tree removal and land clearing in Southeast Ontario — real people, real work, safer properties.",
 };
 
 export default function AboutPage() {
   return (
     <>
-      <PageHeader
-        eyebrow="Who We Are"
-        title="About Bossdawg"
-        description="A local Eastern Ontario crew built on safe work, tidy sites and straight answers."
-      />
-      <PagePlaceholder note="The about page is being written. In the meantime, call us and speak to the crew directly." />
+      <AboutHeroSection />
+      <AboutServicesBar />
+      <MeetOwnerSection />
+      <TeamSection />
+      <AboutServiceAreaSection />
+      <OurWorkSection />
+      <FaqSection />
+      <ReviewsSection />
+      <ContactSection />
     </>
   );
 }

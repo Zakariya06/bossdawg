@@ -94,7 +94,7 @@ export function JobFlowSection() {
           {jobSteps.map((step, index) => (
             <li key={step.title}>
               <Reveal delay={(index % 3) * 100} className="group h-full">
-                <article className="job-card">
+                <article className="surface-card job-card">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image
                       src={step.image}

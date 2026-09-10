@@ -23,6 +23,13 @@ export const siteConfig = {
     time: "7 AM to 7 PM",
   },
 
+  /* The owner is named across the about page, so the name and role live here
+     rather than being typed into a component (AGENTS.md §11). */
+  owner: {
+    name: "David",
+    role: "Owner & Operator",
+  },
+
   rating: {
     score: "4.8",
     count: 74,
