@@ -65,6 +65,9 @@
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   /* Decorative only — the "Tough Trees. Trusted Locally." brand lockup */
   --font-script: var(--font-permanent-marker), cursive;
+  /* Light handwritten sign-off ("Your property. Our priority."). Thin and
+     slanted, where --font-script is a heavy marker. */
+  --font-signature: var(--font-kalam), cursive;
 
   /* Fluid heading scale — one scale for the entire site (AGENTS.md §6) */
   /* min() with a vh term keeps the headline from forcing the hero past one
@@ -605,6 +608,62 @@
     background-color: rgba(255, 255, 255, 0.075);
   }
 
+  /* Frosted variant for cards over a textured backdrop: a touch more fill, a
+     brighter hairline and a blur of whatever sits behind the card. */
+  .surface-card--glass {
+    border-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    backdrop-filter: blur(12px) saturate(120%);
+  }
+
+  .surface-card--glass:hover {
+    background-color: rgba(255, 255, 255, 0.09);
+  }
+
+  /* Light counterpart to `.surface-card`: white panel, hairline border and a
+     soft shadow that deepens as the card lifts on hover. Photo above, copy
+     below; section-specific layout goes on a class alongside it. */
+  .panel-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-surface);
+    box-shadow: 0 6px 18px rgba(20, 51, 43, 0.07);
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .panel-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(20, 51, 43, 0.18);
+  }
+
+  /* Handwritten sign-off — "Your property. Our priority." Large, light and
+     italic, tilted up to the right, with `.signature__line` stepping the second
+     line in. Colour comes from the context (orange on the hero card, grey on
+     the service-area bar). */
+  .signature {
+    font-family: var(--font-signature);
+    font-size: clamp(1.75rem, 1.25rem + 0.8vw, 2.125rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.02;
+    transform: rotate(-9deg);
+    transform-origin: left center;
+  }
+
+  .signature__line {
+    display: block;
+    padding-left: 1.4em;
+  }
+
   /* Angled photo card — the two stacked hero photos in the reference */
   .photo-card {
     position: relative;
@@ -809,142 +868,159 @@
   /* About hero trust card. The about hero reuses `.hero` wholesale, so this
      card sits where the home hero puts its inset photographs — and, like them,
      its padding and internal rhythm are sized in `vh` so the section keeps
-     fitting one viewport on short screens (AGENTS.md §13.1). */
+     fitting one viewport on short screens (AGENTS.md §13.1).
+     Proportions follow the design plate: ~20rem wide, warm off-white. */
+  .about-hero__card-slot {
+    margin-left: auto;
+    max-width: 21rem;
+  }
+
   .about-hero__card {
-    background-color: var(--color-surface);
+    background-color: var(--color-surface-muted);
     border-radius: var(--radius-card);
-    padding: clamp(1.15rem, 3vh, 1.75rem);
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+    padding: clamp(1.25rem, 3.4vh, 1.85rem) clamp(1.25rem, 3vh, 1.75rem);
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.36);
+  }
+
+  .about-hero__card-icon {
+    flex-shrink: 0;
+    width: 3.4rem;
+    height: auto;
+  }
+
+  .about-hero__card-title {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
   }
 
   .about-hero__card-body {
-    margin-top: clamp(0.7rem, 2vh, 1.15rem);
+    margin-top: clamp(0.85rem, 2.4vh, 1.35rem);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-ink-soft);
   }
 
-  /* Sign-off: short brand rule, then the script line pushed to the right so it
-     reads as a hand-written note in the corner of the card. */
+  /* Sign-off: short brand rule, then the `.signature` line pushed to the right —
+     a note written into the corner of the card. */
   .about-hero__signoff {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
-    margin-top: clamp(0.7rem, 2vh, 1.15rem);
-  }
-
-  .about-hero__signoff-rule {
-    flex-shrink: 0;
-    width: 2.75rem;
-    height: 2px;
-    background-color: var(--color-brand);
-  }
-
-  .about-hero__signoff span:last-child {
-    margin-left: auto;
-    text-align: right;
-    transform: rotate(-4deg);
+    gap: 1rem;
+    margin-top: clamp(0.9rem, 2.6vh, 1.5rem);
   }
 
   /* About services bar: the dark strip the first scroll reveals under the
-     about hero. Same role as `.property-types` on the home page, on ink. */
+     about hero. Warm near-black to match the design plate, with the icon
+     artwork extracted from that plate. */
   .about-services-bar {
-    background-color: var(--color-ink);
-    padding-block: 2rem;
+    background-color: var(--color-ink-deep);
+    padding-block: 2.25rem;
   }
 
   @media (min-width: 768px) {
     .about-services-bar {
-      padding-block: 2.5rem;
+      padding-block: 2.75rem;
     }
   }
 
-  /* Meet-the-owner section. The portrait is taken out of the grid and pinned to
-     the right edge of the viewport, covering the right half of the section, so
-     it bleeds past the container rather than sitting inside it. The grid's
-     empty second column reserves that space for the copy. */
-  .meet-owner {
-    position: relative;
+  /* One column, then two, then four from xl. At xl the four columns are sized
+     to their content and spread apart rather than split equally: the
+     descriptions differ in length by ~90px, and equal columns wrap the long
+     ones onto a second line while the short ones leave space unused. */
+  .about-services-bar__list {
+    display: grid;
+    row-gap: 2rem;
+    column-gap: 2.5rem;
   }
 
-  /* Below lg the portrait is back in the flow, centred under the copy. */
+  @media (min-width: 640px) {
+    .about-services-bar__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .about-services-bar__list {
+      grid-template-columns: repeat(4, auto);
+      justify-content: space-between;
+      column-gap: 0;
+    }
+  }
+
+  /* The four icons have different natural proportions, so each sits in a
+     fixed slot — the text columns then line up across the bar. */
+  .about-services-bar__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4.5rem;
+  }
+
+  .about-services-bar__icon img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
+
+  /* Meet-the-owner section. The portrait is the right side of the design plate
+     — photograph, wood-ring edge, overhanging trunk and name plate — extracted
+     as one image. Its margins are the plate's flat background, which matches
+     --color-surface-muted, so the image can run off the top and right of the
+     section and the join stays invisible. */
+  .meet-owner {
+    /* Distance from the container's content edge to the viewport edge */
+    --meet-bleed: max(2.5rem, calc((100vw - var(--container-max)) / 2 + 2.5rem));
+    overflow: hidden;
+    background-color: var(--color-surface-muted);
+  }
+
+  /* Below xl: stacked, the portrait under the copy at its own proportions. */
+  .meet-owner__layout {
+    display: grid;
+    align-items: center;
+  }
+
   .meet-owner__portrait {
+    position: relative;
     width: 100%;
     max-width: 36rem;
     margin: 2.5rem auto 0;
+    aspect-ratio: 579 / 752;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
+    .meet-owner {
+      padding-block: 4.5rem;
+    }
+
+    /* The copy gets a fixed measure and the portrait everything to its right,
+       so the two cannot overlap at any width. The artwork's own left strip is
+       plain background and wood-ring texture, which forms the gutter. */
+    .meet-owner__layout {
+      grid-template-columns: minmax(0, 36rem) minmax(0, 1fr);
+      column-gap: 1rem;
+    }
+
+    /* Pulled out through the section's padding and the container gutter so the
+       trunk meets the top and right edges, as in the design. Capped so a very
+       wide screen does not blow the photograph up: the extra width becomes
+       plain ground to its left, which is seamless. When the copy is taller
+       than the image, the image stays top-aligned and the ground continues. */
     .meet-owner__portrait {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 50%;
-      max-width: none;
-      margin: 0;
-    }
-
-    /* Full-bleed panel: no card framing, and height comes from the section. */
-    .meet-owner__portrait .owner-portrait {
-      height: 100%;
-      aspect-ratio: auto;
-      border-radius: 0;
-      box-shadow: none;
+      align-self: start;
+      justify-self: end;
+      width: calc(100% + var(--meet-bleed));
+      max-width: 56rem;
+      margin: -4.5rem calc(var(--meet-bleed) * -1) -4.5rem 0;
     }
   }
-
-
-  /* Owner portrait on the about page. Fixed aspect so the name plate always
-     lands on the photograph rather than on whatever follows it. */
-  .owner-portrait {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 5;
-    border-radius: var(--radius-card);
-    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
-  }
-
-  /* Dark name plate pinned to the lower-right corner of the portrait */
-  .owner-plate {
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    background-color: rgba(13, 13, 13, 0.9);
-    border-radius: 0.5rem;
-    padding: 0.85rem 1.15rem;
-  }
-
-  @media (min-width: 768px) {
-    .owner-plate {
-      right: 1.5rem;
-      bottom: 1.5rem;
-    }
-  }
-
-  .owner-plate__name {
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 800;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #fff;
-  }
-
-  .owner-plate__role {
-    margin-top: 0.3rem;
-    font-family: var(--font-display);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-on-dark-muted);
-  }
-
-  /* Hairline between the name and the role lines */
-  .owner-plate__name + .owner-plate__role {
-    margin-top: 0.6rem;
-    padding-top: 0.6rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
 
   /* Services intro: a flat dark panel with the photograph occupying the
      top-right, and a solid full-width service strip along the bottom.
@@ -2483,106 +2559,271 @@
 
 
 
-  /* Our work: light section between the two dark ones, so the photographs
-     carry it rather than a panel treatment. */
+  /* Our work: light section between the two dark ones. Project cards are
+     `.panel-card`s set to the design plate — photograph across the top,
+     orange icon and label, title, description — with a shadow that reads on
+     the sides and deepens as the card lifts. */
   .our-work {
     background-color: var(--color-surface-muted);
   }
 
-  /* About service area: the map artwork is the section's full-bleed background,
-     so the section is only a positioning context and a fallback colour for the
-     strip the crop cannot reach. */
-  .about-service-area {
+  .work-card {
+    border-radius: 0.75rem;
+    box-shadow:
+      0 1px 2px rgba(30, 24, 18, 0.05),
+      0 10px 28px rgba(30, 24, 18, 0.08);
+  }
+
+  .work-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(249, 115, 22, 0.35);
+    box-shadow:
+      0 2px 4px rgba(30, 24, 18, 0.06),
+      0 24px 48px rgba(30, 24, 18, 0.16);
+  }
+
+  /* Proportions of the photograph in the design plate (326 x 237) */
+  .work-card__photo {
     position: relative;
-    isolation: isolate;
     overflow: hidden;
-    background-color: var(--color-ink-deep);
+    aspect-ratio: 326 / 237;
   }
 
-  /* The town labels have to follow the backdrop's `object-fit: cover` crop, or
-     they slide off their pins as the section's proportions change. This layer
-     reproduces that crop as a box: `.about-service-area__plate` keeps the
-     artwork's aspect ratio and grows until it covers the section on both axes,
-     exactly as `cover` scales the image, so a percentage inside it lands where
-     the pin is actually painted. */
-  .about-service-area__pins {
-    display: none;
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    overflow: hidden;
-    pointer-events: none;
+  .work-card__photo img {
+    transition: transform var(--duration-reveal) var(--ease-out-soft);
   }
 
-  /* Narrower than this and the crop pulls the western pins in under the copy,
-     where a label would sit on top of the text. The image alt carries the town
-     list at those sizes instead. */
-  @media (min-width: 1280px) {
-    .about-service-area__pins {
-      display: block;
+  .work-card:hover .work-card__photo img {
+    transform: scale(1.06);
+  }
+
+  .work-card__body {
+    padding: 1.5rem 1.5rem 1.75rem;
+  }
+
+  /* Card label: the eyebrow treatment, tightened below 1440px so the longest
+     ("Waterfront Properties") stays on one line beside its icon. */
+  .work-card__label {
+    font-size: var(--text-eyebrow);
+    letter-spacing: 0.14em;
+  }
+
+  @media (min-width: 1440px) {
+    .work-card__label {
+      font-size: 1rem;
+      letter-spacing: 0.24em;
     }
   }
 
-  .about-service-area__plate {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    aspect-ratio: 1672 / 941;
-    min-width: 100%;
-    min-height: 100%;
+  @media (min-width: 1280px) {
+    .work-card__body {
+      padding: 1.625rem 1.75rem 2rem;
+    }
   }
 
+  /* About service area — two parts, as in the design plate:
+       1. the map area: copy over the map artwork, with the town labels;
+       2. a plain bar below it for the calls to action and the sign-off.
+     The artwork never runs under the bar. */
+  .about-service-area {
+    background-color: var(--color-ink-deep);
+  }
+
+  .about-service-area__map-area {
+    position: relative;
+    overflow: hidden;
+    /* Lets the labels and the plate position use `cqw` — 1% of this area's
+       width, which is exactly 1% of the artwork's width (the plate is full
+       width), so text on the map scales with the map. */
+    container-type: inline-size;
+    padding-top: var(--spacing-section-mobile);
+  }
+
+  /* Below xl: the map sits under the copy as a full-width picture. */
+  .about-service-area__plate {
+    position: relative;
+    margin-top: 2.5rem;
+    aspect-ratio: 1672 / 941;
+  }
+
+  .about-service-area__plate img {
+    object-fit: cover;
+  }
+
+  /* Town names are only drawn where the map is wide enough to carry them; the
+     image alt lists the same towns everywhere. */
+  .about-service-area__labels {
+    display: none;
+  }
+
+  @media (min-width: 1280px) {
+    .about-service-area__map-area {
+      padding-top: 6rem;
+      padding-bottom: 4rem;
+      /* Never much shorter than the artwork (the design plate crops ~3% of it):
+         on very wide screens a content-height area would crop the lake and the
+         compass off the bottom. */
+      min-height: 53vw;
+    }
+
+    /* Full width, at the artwork's own proportions, behind the copy. Anchored
+       to the bottom of the area when the area is taller than the artwork (the
+       strip above is the same near-black as the artwork's sky), and centred
+       when it is shorter — the `min()` picks whichever applies. Because the
+       image and the labels share this one box, a label cannot leave its pin
+       however the area is sized. */
+    .about-service-area__plate {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: min(0px, calc((100% - 56.28cqw) / 2));
+      z-index: 0;
+      margin-top: 0;
+    }
+
+    /* Soft top edge, so the artwork's sky melts into the section above. */
+    .about-service-area__plate img {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+      mask-image: linear-gradient(to bottom, transparent 0, #000 14%);
+    }
+
+    /* Darkens only the left of the artwork, behind the copy. */
+    .about-service-area__plate::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(15, 10, 6, 0.82) 0%,
+        rgba(15, 10, 6, 0.55) 26%,
+        rgba(15, 10, 6, 0) 44%
+      );
+      pointer-events: none;
+    }
+
+    .about-service-area__labels {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+  }
+
+  /* Town label: sits to the right of its pin, centred on it. Sized in `cqw` so
+     it keeps the design's proportion to the map. */
   .map-label {
     position: absolute;
     transform: translateY(-50%);
     white-space: nowrap;
     font-family: var(--font-display);
-    font-size: 0.8125rem;
+    font-size: clamp(0.9375rem, 1.45cqw, 1.375rem);
     font-weight: 700;
     color: #fff;
-    text-shadow: 0 2px 7px rgba(0, 0, 0, 0.9);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
   }
 
-  /* Region names sit quieter than town names */
+  /* Region names are quieter than town names, and centred on their point */
   .map-region {
     position: absolute;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    line-height: 1.35;
-    color: rgba(255, 255, 255, 0.55);
-    text-shadow: 0 2px 7px rgba(0, 0, 0, 0.9);
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: clamp(0.875rem, 1.35cqw, 1.25rem);
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.62);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
   }
 
   .map-region--water {
     font-style: italic;
-    font-weight: 600;
-    color: #7fb4e8;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: #6ea8dc;
   }
 
+  /* Region label positions. At 1536px and up they sit where the design plate
+     puts them. Narrower than that the map shrinks but the copy does not, so
+     both ease east and south — still on the county and the lake — to stay
+     clear of the text. */
+  .map-region--county {
+    left: 60%;
+    top: 83%;
+  }
+
+  .map-region--lake {
+    left: 56%;
+    top: 91%;
+  }
+
+  @media (min-width: 1536px) {
+    .map-region--county {
+      left: 53.2%;
+      top: 72%;
+    }
+
+    .map-region--lake {
+      left: 52%;
+      top: 90.5%;
+    }
+  }
+
+  /* Lede measure: slightly narrower below 1440px, which keeps its line ends
+     clear of the westernmost town label as the map shrinks. */
+  .about-service-area__lede {
+    max-width: 36rem;
+  }
+
+  @media (min-width: 1280px) and (max-width: 1439px) {
+    .about-service-area__lede {
+      max-width: 32rem;
+    }
+  }
+
+  /* Compass artwork extracted from the design plate */
   .map-compass {
     position: absolute;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.7);
+    transform: translate(-50%, -50%);
+    width: clamp(1.75rem, 2.5cqw, 2.5rem);
+    height: auto;
   }
 
-  /* Closing bar: the two calls to action, the service-area line and the brand
-     sign-off, on a hairline above them. */
+  /* The plain bar below the map: calls to action, the service-area line and
+     the handwritten sign-off, divided by hairlines. */
   .about-service-area__bar {
+    padding-block: 2.5rem 3.5rem;
+  }
+
+  @media (min-width: 1280px) {
+    .about-service-area__bar {
+      padding-block: 3.25rem 4.5rem;
+    }
+  }
+
+  .about-service-area__bar-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem 2.5rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 1.75rem 2.25rem;
+  }
+
+  .about-service-area__divider {
+    display: none;
+    flex-shrink: 0;
+    width: 1px;
+    height: 5.5rem;
+    background-color: rgba(255, 255, 255, 0.28);
+  }
+
+  @media (min-width: 1280px) {
+    .about-service-area__divider {
+      display: block;
+    }
+
+    /* Spread across the row, as in the design, rather than packed left */
+    .about-service-area__bar-row {
+      flex-wrap: nowrap;
+      justify-content: space-between;
+    }
   }
 
   /* Team: dark section on the forest backdrop. Heading and copy beside the
@@ -2594,10 +2835,11 @@
     background-color: var(--color-ink-deep);
   }
 
+  /* Proportions of the photograph panel in the design plate (592 x 405) */
   .team__photo {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 592 / 405;
     border-radius: var(--radius-card);
   }
 
@@ -2610,27 +2852,77 @@
     background-color: var(--color-brand);
   }
 
+  /* Trait card: extracted icon in a fixed slot so the three text columns line
+     up, centred against the copy as in the design. */
+  .team-card {
+    display: flex;
+    align-items: center;
+    gap: 1.125rem;
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 1280px) {
+    .team-card {
+      padding: 1.5rem;
+    }
+  }
+
+  .team-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 4.75rem;
+  }
+
+  .team-card__icon img {
+    max-width: 100%;
+  }
+
+  /* Closing band: two groups spread apart — a vertical divider before the
+     first pair of lines, the orange rule before the second. */
   .team__footer {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 1.25rem 2.5rem;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 2rem 7rem;
+    margin-top: 4rem;
   }
 
-  /* Closing brand lines. Same tracked uppercase treatment as `.eyebrow`, but
-     block level so the two-line version can break where the design breaks it. */
+  @media (min-width: 1280px) {
+    .team__footer {
+      margin-top: 5.5rem;
+    }
+  }
+
+  .team__footer-group {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .team__footer-divider {
+    flex-shrink: 0;
+    width: 1px;
+    height: 3.75rem;
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  /* Closing brand lines. The larger eyebrow scale, but block level so the
+     two-line version can break where the design breaks it. */
   .team__motto {
     font-family: var(--font-display);
-    font-size: var(--text-eyebrow);
-    font-weight: 600;
-    line-height: 1.7;
-    letter-spacing: 0.22em;
+    font-size: clamp(0.8125rem, 0.65rem + 0.4vw, 1rem);
+    font-weight: 500;
+    line-height: 1.75;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--color-on-dark);
+  }
+
+  .team__motto--muted {
+    color: var(--color-on-dark-muted);
   }
 
   /* Step card layout on top of `.surface-card`: photograph above, copy below */
@@ -3096,25 +3388,6 @@
   /* Equipment card: wide photograph above, copy on a white panel below.
      Proportions follow the design (1.86:1 photo, compact body) so the full
      grid of six fits on one screen. */
-  .machinery-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-line);
-    background-color: var(--color-surface);
-    box-shadow: 0 6px 18px rgba(20, 51, 43, 0.07);
-    transition:
-      transform var(--duration-ui) var(--ease-out-soft),
-      box-shadow var(--duration-ui) var(--ease-out-soft);
-  }
-
-  .machinery-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(20, 51, 43, 0.18);
-  }
-
   .machinery-card__body {
     padding: clamp(0.875rem, 1.2vw, 1.125rem) clamp(1rem, 1.4vw, 1.375rem)
       clamp(1rem, 1.4vw, 1.375rem);
@@ -3463,10 +3736,11 @@
     transform: none;
   }
 
-  /* Machinery card hover lift and photo zoom */
-  .machinery-card,
-  .machinery-card:hover,
-  .machinery-card img {
+  /* Light panel card hover lift and photo zoom */
+  .panel-card,
+  .panel-card:hover,
+  .panel-card img,
+  .work-card:hover .work-card__photo img {
     transition: none;
     transform: none;
   }

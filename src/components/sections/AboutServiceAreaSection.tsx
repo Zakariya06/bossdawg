@@ -3,14 +3,14 @@
  * Purpose: Names the region the crew covers, the towns inside it, and closes
  * the about page with the two calls to action.
  *
- * The map artwork is the section's full-bleed background. Because a full-bleed
- * image is cropped by `object-fit: cover`, the town labels cannot simply be
- * placed as percentages of the section — they would slide off their pins as the
- * crop changes. They ride on `.about-service-area__plate` instead, a box that
- * reproduces the same cover geometry, so a percentage inside it always lands
- * where the pin is actually painted.
+ * Two parts, as in the design plate: a map area — copy over the map artwork,
+ * with the town labels — and a plain bar below it for the calls to action and
+ * the sign-off. The map never runs under the bar.
  *
- * Pin coordinates were measured from the artwork itself, not estimated by eye.
+ * The artwork and its labels share one box (`.about-service-area__plate`) at
+ * the artwork's own proportions, so a label always lands on its pin. Pin
+ * coordinates were measured from the artwork; the promise icons, the pin in
+ * the bar and the compass are extracted from the design plate.
  */
 
 import Image from "next/image";
@@ -19,21 +19,26 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
-import {
-  ArrowRightIcon,
-  CrewIcon,
-  HandshakeIcon,
-  MapPinIcon,
-  NorthArrowIcon,
-  ShieldCheckIcon,
-  TreeIcon,
-} from "@/components/ui/Icons";
+import { ArrowRightIcon } from "@/components/ui/Icons";
 
+/** `lines` break where the design breaks them. Icon sizes are natural sizes. */
 const areaPromises = [
-  { title: "Local people", description: "Local service", icon: CrewIcon },
-  { title: "Safe properties", description: "Stronger communities", icon: ShieldCheckIcon },
-  { title: "Experienced crew", description: "Trusted results", icon: TreeIcon },
-  { title: "Here when you need us", description: null, icon: HandshakeIcon },
+  {
+    lines: ["Local people", "Local service"],
+    icon: { src: "/assets/about-icon-local-people.webp", width: 56, height: 50 },
+  },
+  {
+    lines: ["Safe properties", "Stronger communities"],
+    icon: { src: "/assets/about-icon-safe-properties.webp", width: 46, height: 58 },
+  },
+  {
+    lines: ["Experienced crew", "Trusted results"],
+    icon: { src: "/assets/about-icon-experienced-crew.webp", width: 55, height: 68 },
+  },
+  {
+    lines: ["Here when", "you need us"],
+    icon: { src: "/assets/about-icon-here-when-needed.webp", width: 72, height: 50 },
+  },
 ];
 
 /**
@@ -54,80 +59,23 @@ const mapPins = [
 ];
 
 /** Gap between a pin's centre and its label, as a percentage of the artwork. */
-const LABEL_GAP = 1.5;
-/**
- * Past this point a right-hand label runs off the artwork, so it is anchored on
- * the other side of its pin instead. Only Gananoque, the easternmost pin,
- * crosses it.
- */
-const RIGHT_EDGE = 88;
+const LABEL_GAP = 1.9;
 
 export function AboutServiceAreaSection() {
   return (
-    <section className="about-service-area section">
-      {/* ---------- Full-bleed map artwork ---------- */}
-      <Image
-        src="/assets/about-service-area-map.webp"
-        alt="Night map of the Southeast Ontario service area, pinned at Stone Mills, Tamworth, Kingston, Napanee, Odessa, Amherstview, Belleville, Deseronto, Gananoque and Picton, with Prince Edward County and Lake Ontario to the south"
-        fill
-        sizes="100vw"
-        className="section-backdrop section-backdrop--center"
-      />
-      <div className="media-scrim media-scrim--deep media-scrim--edges" aria-hidden="true" />
-
-      {/* Town names, riding on the artwork's cover geometry. Shown only where
-          the section is wide enough to keep them clear of the copy; the image
-          alt carries the same list everywhere else. */}
-      <div className="about-service-area__pins" aria-hidden="true">
-        <div className="about-service-area__plate">
-          {mapPins.map((pin) => {
-            const anchorRight = pin.x > RIGHT_EDGE;
-
-            return (
-              <span
-                key={pin.town}
-                className="map-label"
-                style={
-                  anchorRight
-                    ? { right: `${100 - pin.x + LABEL_GAP}%`, top: `${pin.y}%` }
-                    : { left: `${pin.x + LABEL_GAP}%`, top: `${pin.y}%` }
-                }
-              >
-                {pin.town}
-              </span>
-            );
-          })}
-
-          <span className="map-region" style={{ left: "50.5%", top: "68%" }}>
-            Prince Edward
-            <br />
-            County
-          </span>
-          <span className="map-region map-region--water" style={{ left: "42%", top: "89%" }}>
-            Lake Ontario
-          </span>
-
-          <span className="map-compass" style={{ right: "3%", top: "86%" }}>
-            N
-            <NorthArrowIcon className="size-5" />
-          </span>
-        </div>
-      </div>
-
-      <Container className="relative z-10">
-        {/* Two columns at lg, but only the first is filled: the second leaves
-            the map side of the artwork clear. */}
-        <div className="grid lg:grid-cols-12 lg:gap-14">
-          {/* ---------- Heading, copy and promises ---------- */}
-          <div className="lg:col-span-5">
+    <section className="about-service-area">
+      {/* ---------- Map area ---------- */}
+      <div className="about-service-area__map-area">
+        <Container className="relative z-10">
+          <div>
             <Reveal delay={80}>
-              <p className="eyebrow eyebrow--trailing text-brand">Our Service Area</p>
+              <p className="eyebrow eyebrow--trailing eyebrow--lg text-brand">Our Service Area</p>
             </Reveal>
 
             <TextReveal
               as="h2"
               delay={180}
-              className="heading-display mt-4 text-h2 text-white"
+              className="heading-display mt-4 text-display text-white xl:w-max"
               segments={[
                 { text: "Proudly Serving" },
                 { text: "Southeast Ontario", className: "text-brand", newLine: true },
@@ -135,74 +83,125 @@ export function AboutServiceAreaSection() {
             />
 
             <Reveal delay={560}>
-              <p className="mt-5 max-w-lg text-base leading-relaxed text-on-dark md:text-lg">
+              <p className="about-service-area__lede mt-6 text-lead-2xl text-on-dark">
                 We&apos;re a local, community-focused business, serving homeowners, businesses, and
                 municipalities across Southeast Ontario. When you need reliable tree care,
                 we&apos;re just around the corner.
               </p>
             </Reveal>
 
-            <ul className="mt-9 grid gap-x-8 gap-y-7 sm:grid-cols-2">
-              {areaPromises.map((promise, index) => {
-                const PromiseIcon = promise.icon;
-
-                return (
-                  <li
-                    key={promise.title}
-                    className={
-                      index % 2 === 1 ? "sm:border-l sm:border-white/15 sm:pl-8" : undefined
-                    }
-                  >
-                    <Reveal delay={700 + index * 90} className="flex items-start gap-3.5">
-                      <PromiseIcon className="size-9 shrink-0 text-brand" />
-                      <div>
-                        <p className="font-display text-sm leading-snug font-bold text-white md:text-base">
-                          {promise.title}
-                        </p>
-                        {promise.description && (
-                          <p className="mt-0.5 text-sm leading-snug text-on-dark-muted">
-                            {promise.description}
-                          </p>
-                        )}
-                      </div>
-                    </Reveal>
-                  </li>
-                );
-              })}
+            <ul className="mt-10 grid max-w-2xl gap-x-6 gap-y-7 sm:grid-cols-2">
+              {areaPromises.map((promise, index) => (
+                <li
+                  key={promise.lines.join(" ")}
+                  className={index % 2 === 1 ? "sm:border-l sm:border-white/25 sm:pl-6" : undefined}
+                >
+                  <Reveal delay={700 + index * 90} className="flex items-center gap-4">
+                    <span className="flex w-18 shrink-0 justify-center">
+                      <Image
+                        src={promise.icon.src}
+                        alt=""
+                        width={promise.icon.width}
+                        height={promise.icon.height}
+                        unoptimized
+                      />
+                    </span>
+                    <p className="text-lg leading-snug text-white xl:text-xl">
+                      {promise.lines[0]}
+                      <br />
+                      {promise.lines[1]}
+                    </p>
+                  </Reveal>
+                </li>
+              ))}
             </ul>
           </div>
+        </Container>
+
+        {/* ---------- Map artwork and labels ---------- */}
+        <div className="about-service-area__plate">
+          <Image
+            src="/assets/about-service-area-map.webp"
+            alt="Night map of the Southeast Ontario service area, pinned at Stone Mills, Tamworth, Kingston, Napanee, Odessa, Amherstview, Belleville, Deseronto, Gananoque and Picton, with Prince Edward County and Lake Ontario to the south"
+            fill
+            sizes="100vw"
+          />
+
+          <div className="about-service-area__labels" aria-hidden="true">
+            {mapPins.map((pin) => (
+              <span
+                key={pin.town}
+                className="map-label"
+                style={{ left: `${pin.x + LABEL_GAP}%`, top: `${pin.y}%` }}
+              >
+                {pin.town}
+              </span>
+            ))}
+
+            <span className="map-region map-region--county">
+              Prince Edward
+              <br />
+              County
+            </span>
+            <span className="map-region map-region--water map-region--lake">
+              Lake Ontario
+            </span>
+
+            <Image
+              src="/assets/about-map-compass.webp"
+              alt=""
+              width={36}
+              height={67}
+              unoptimized
+              className="map-compass"
+              style={{ left: "94.3%", top: "88.2%" }}
+            />
+          </div>
         </div>
+      </div>
 
-        {/* ---------- Calls to action and closing line ---------- */}
-        <Reveal delay={200} className="about-service-area__bar">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <Button href="/contact" variant="primary" className="group">
-              Get a free estimate
-              <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
-            </Button>
-            <Button href="/contact" variant="outline">
-              Contact us
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-3.5 border-white/15 sm:border-l sm:pl-8">
-            <MapPinIcon className="size-9 shrink-0 text-brand" />
-            <div>
-              <p className="font-display text-base font-bold text-white">
-                Serving Southeast Ontario
-              </p>
-              <p className="mt-0.5 text-sm text-on-dark-muted">Today and Tomorrow</p>
+      {/* ---------- Plain bar: calls to action and sign-off ---------- */}
+      <div className="about-service-area__bar">
+        <Container>
+          <Reveal delay={150} className="about-service-area__bar-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+              <Button href="/contact" variant="primary" className="button--lg group">
+                Get a free estimate
+                <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
+              </Button>
+              <Button href="/contact" variant="outline" className="button--lg">
+                Contact us
+              </Button>
             </div>
-            <span className="brand-rule" aria-hidden="true" />
-          </div>
 
-          <p className="font-script text-lg leading-tight text-on-dark-muted sm:ml-auto">
-            Your property.
-            <br />
-            Our priority.
-          </p>
-        </Reveal>
-      </Container>
+            <span className="about-service-area__divider" aria-hidden="true" />
+
+            <div className="flex items-center gap-4">
+              <Image
+                src="/assets/about-icon-serving-pin.webp"
+                alt=""
+                width={42}
+                height={58}
+                unoptimized
+              />
+              <div>
+                <p className="font-display text-lg font-bold text-white">Serving Southeast Ontario</p>
+                <p className="mt-1 flex items-center gap-4 text-lg text-on-dark">
+                  Today and Tomorrow
+                  <span className="brand-rule" aria-hidden="true" />
+                </p>
+              </div>
+            </div>
+
+            <span className="about-service-area__divider" aria-hidden="true" />
+
+            <p className="signature text-on-dark-muted">
+              Your property.
+              <span className="signature__line">Our priority.</span>
+            </p>
+          </Reveal>
+        </Container>
+      </div>
     </section>
   );
 }

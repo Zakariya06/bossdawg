@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans, Permanent_Marker } from "next/font/google";
+import { Inter, Kalam, Plus_Jakarta_Sans, Permanent_Marker } from "next/font/google";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -35,6 +35,15 @@ const permanentMarker = Permanent_Marker({
   display: "swap",
 });
 
+/* Documented exception (AGENTS.md §6): the light handwritten sign-off on the
+   about page ("Your property. Our priority."). Only the 300 weight is loaded. */
+const kalam = Kalam({
+  variable: "--font-kalam",
+  subsets: ["latin"],
+  weight: "300",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
     default: `${siteConfig.name} | Tree Removal & Land Clearing in Eastern Ontario`,
@@ -47,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${inter.variable} ${permanentMarker.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${inter.variable} ${permanentMarker.variable} ${kalam.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <SiteHeader />

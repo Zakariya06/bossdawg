@@ -11,65 +11,75 @@ import Image from "next/image";
 
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
-import { MapPinIcon } from "@/components/ui/Icons";
 
 /**
- * Supplied icon artwork, reused from the home page's services strip. SVG is
- * vector, so it is used as-is rather than converted to WebP (AGENTS.md §14.1
- * covers raster images only). The service area uses the inline `MapPinIcon`,
- * as it does in the home page's property types bar.
+ * Icon artwork extracted from the about design plate (light illustrations and
+ * the orange pin, each cut out onto transparency and run through the WebP
+ * intake). Served unoptimised: they are already tiny, and re-encoding would
+ * soften the fine edges. Width and height are each file's natural size.
  */
 const highlights = [
   {
     title: "Tree Removal",
     description: "Dangerous, dead or unwanted trees",
-    iconAsset: "tree-removal",
+    icon: { src: "/assets/about-icon-tree-removal.webp", width: 54, height: 71 },
   },
   {
     title: "Stump Grinding",
     description: "Clean, safe, usable spaces",
-    iconAsset: "stump-grinding",
+    icon: { src: "/assets/about-icon-stump-grinding.webp", width: 73, height: 66 },
   },
   {
     title: "Land Clearing",
     description: "From small lots to large properties",
-    iconAsset: "land-clearing",
+    icon: { src: "/assets/about-icon-land-clearing.webp", width: 70, height: 62 },
   },
   {
     title: "Proudly Serving",
     description: "Southeast Ontario",
-    icon: MapPinIcon,
+    icon: { src: "/assets/about-icon-map-pin.webp", width: 45, height: 60 },
+    /* The design sets both lines of the service area at title weight. */
+    emphasised: true,
   },
-] as const;
+];
 
 export function AboutServicesBar() {
   return (
     <section id="what-we-do" className="about-services-bar" aria-label="What we do">
       <Container>
-        <ul className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="about-services-bar__list">
           {highlights.map((highlight, index) => (
             <li
               key={highlight.title}
-              className={index > 0 ? "lg:border-l lg:border-white/15 lg:pl-8" : undefined}
+              className={
+                index === 0
+                  ? "xl:pr-3"
+                  : index === highlights.length - 1
+                    ? "xl:border-l xl:border-white/25 xl:pl-7"
+                    : "xl:border-l xl:border-white/25 xl:pr-3 xl:pl-7"
+              }
             >
               <Reveal delay={index * 90} className="flex items-center gap-4">
-                {"icon" in highlight ? (
-                  <highlight.icon className="size-11 shrink-0 text-brand md:size-12" />
-                ) : (
+                <span className="about-services-bar__icon">
                   <Image
-                    src={`/assets/icons/${highlight.iconAsset}.svg`}
+                    src={highlight.icon.src}
                     alt=""
-                    width={64}
-                    height={64}
+                    width={highlight.icon.width}
+                    height={highlight.icon.height}
                     unoptimized
-                    className="size-11 shrink-0 md:size-12"
                   />
-                )}
-                <div>
-                  <h2 className="font-display text-base leading-tight font-bold text-white md:text-lg">
+                </span>
+                <div className="min-w-0">
+                  <h2 className="font-display text-lg leading-tight font-bold text-white md:text-xl">
                     {highlight.title}
                   </h2>
-                  <p className="mt-1 text-sm leading-snug text-on-dark-muted">
+                  <p
+                    className={
+                      highlight.emphasised
+                        ? "mt-1 font-display text-lg leading-snug font-bold text-white md:text-xl"
+                        : "mt-1.5 text-base leading-snug text-on-dark-muted"
+                    }
+                  >
                     {highlight.description}
                   </p>
                 </div>

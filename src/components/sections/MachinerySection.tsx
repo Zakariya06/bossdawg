@@ -90,7 +90,7 @@ export function MachinerySection() {
           {equipment.map((item, index) => (
             <li key={item.title}>
               <Reveal delay={(index % 3) * 100} className="group h-full">
-                <article className="machinery-card">
+                <article className="panel-card machinery-card">
                   <div className="relative aspect-[1.86] overflow-hidden">
                     <Image
                       src={item.image}
