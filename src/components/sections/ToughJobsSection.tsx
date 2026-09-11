@@ -15,7 +15,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
-import { ArrowRightIcon, TreeIcon } from "@/components/ui/Icons";
+import { ArrowRightIcon, TwinFirIcon } from "@/components/ui/Icons";
 
 export function ToughJobsSection() {
   return (
@@ -54,7 +54,7 @@ export function ToughJobsSection() {
           <Reveal delay={860}>
             <div className="mt-10 flex flex-col gap-3.5 sm:flex-row sm:items-center sm:gap-4">
               <Button href="/contact" variant="primary" className="button--lg group">
-                <TreeIcon className="size-6" />
+                <TwinFirIcon className="size-7 text-[#160f03]" />
                 Get a Free Quote
                 <ArrowRightIcon className="size-6 transition-transform duration-200 group-hover:translate-x-1" />
               </Button>

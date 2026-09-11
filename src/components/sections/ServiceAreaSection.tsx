@@ -23,12 +23,12 @@ export function ServiceAreaSection() {
         alt="Illustrated map of the Bay of Quinte and Frontenac County service area, pinned at Deseronto and marking Napanee, Belleville, Kingston, Gananoque, Brockville, Perth and Prince Edward County"
         fill
         sizes="100vw"
-        className="object-cover object-center"
+        className="object-cover object-top"
       />
       <div className="service-area__scrim" aria-hidden="true" />
 
-      <Container className="relative z-10 py-14 md:py-16">
-        <div className="max-w-xl lg:max-w-lg">
+      <Container className="relative z-10 pt-24 pb-14 md:pt-32 md:pb-16">
+        <div className="max-w-xl lg:max-w-3xl">
           <Reveal delay={80}>
             <p className="eyebrow eyebrow--plain text-brand">Service Area</p>
           </Reveal>
@@ -36,7 +36,7 @@ export function ServiceAreaSection() {
           <TextReveal
             as="h2"
             delay={180}
-            className="heading-display mt-4 text-h2"
+            className="heading-display mt-4 text-display-xl text-ink"
             segments={[
               { text: "Proudly Serving" },
               { text: "Eastern Ontario.", className: "text-brand", newLine: true },
@@ -44,7 +44,7 @@ export function ServiceAreaSection() {
           />
 
           <Reveal delay={560}>
-            <p className="mt-5 max-w-md text-lead text-body">
+            <p className="mt-6 max-w-xl text-lead-lg text-body">
               From Deseronto to Kingston, the Bay of Quinte and Frontenac County, and beyond. We
               help homeowners, cottages and properties across the region keep their land safe and
               clear.
@@ -52,7 +52,7 @@ export function ServiceAreaSection() {
           </Reveal>
 
           <Reveal delay={700}>
-            <Button href="/service-area" variant="dark" className="group mt-8">
+            <Button href="/service-area" variant="dark" className="button--lg group mt-10">
               View Our Service Area
               <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Button>

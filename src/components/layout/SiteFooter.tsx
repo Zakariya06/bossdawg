@@ -19,8 +19,8 @@ import { Container } from "@/components/ui/Container";
 import {
   FacebookIcon,
   InstagramIcon,
-  MapPinIcon,
-  PhoneIcon,
+  MapPinSolidIcon,
+  PhoneSolidIcon,
 } from "@/components/ui/Icons";
 
 const socialLinks = [
@@ -35,11 +35,16 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <Container>
-        <div className="flex flex-col gap-8 py-9 xl:flex-row xl:items-center xl:justify-between xl:gap-10">
-          <div className="flex flex-wrap items-center gap-x-9 gap-y-6">
-            <Logo />
+        <div className="site-footer__main">
+          {/* ---------- Badge and rule ---------- */}
+          <div className="site-footer__brand">
+            <Logo imageClassName="site-footer__logo" />
+            <span className="site-footer__divider" aria-hidden="true" />
+          </div>
 
-            <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-7 gap-y-3">
+          {/* ---------- Menu over contact details ---------- */}
+          <div className="site-footer__content">
+            <nav aria-label="Footer" className="site-footer__nav">
               {navigation.map((item) => {
                 const isActive =
                   item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -56,60 +61,58 @@ export function SiteFooter() {
                 );
               })}
             </nav>
+
+            <div className="site-footer__contact">
+              <p className="site-footer__address">
+                <MapPinSolidIcon className="site-footer__pin" />
+                {siteConfig.address.full}
+              </p>
+
+              <a href={siteConfig.phone.href} className="site-footer__phone">
+                <span className="site-footer__phone-icon">
+                  <PhoneSolidIcon className="size-1/2" />
+                </span>
+                <span>
+                  <span className="site-footer__phone-number">{siteConfig.phone.display}</span>
+                  <span className="site-footer__phone-hours">
+                    {siteConfig.hours.time}, {siteConfig.hours.days.replace(",", "")}
+                  </span>
+                </span>
+              </a>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-9 gap-y-5">
-            <p className="flex items-center gap-2.5 text-sm text-on-dark-muted">
-              <MapPinIcon className="size-6 shrink-0 text-brand" />
-              {siteConfig.address.full}
-            </p>
+          {/* ---------- Social ---------- */}
+          <ul className="site-footer__socials">
+            {socialLinks.map((social) => {
+              const SocialIcon = social.icon;
 
-            <a
-              href={siteConfig.phone.href}
-              className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
-            >
-              <PhoneIcon className="size-6 shrink-0 text-brand" />
-              <span className="leading-tight">
-                <span className="block font-display text-base font-bold text-white">
-                  {siteConfig.phone.display}
-                </span>
-                <span className="block text-xs text-on-dark-muted">
-                  {siteConfig.hours.time}, {siteConfig.hours.days.replace(",", "")}
-                </span>
-              </span>
-            </a>
-
-            <ul className="flex items-center gap-1">
-              {socialLinks.map((social) => {
-                const SocialIcon = social.icon;
-
-                return (
-                  <li key={social.label}>
-                    <a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${siteConfig.name} on ${social.label}`}
-                      className="site-footer__social"
-                    >
-                      <SocialIcon className="size-6" />
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+              return (
+                <li key={social.label}>
+                  <a
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${siteConfig.name} on ${social.label}`}
+                    className="site-footer__social"
+                  >
+                    <SocialIcon />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </div>
 
         {/* ---------- Bottom bar ---------- */}
-        <div className="site-footer__bottom flex flex-col items-center justify-between gap-3 py-5 sm:flex-row">
-          <p className="text-xs text-on-dark-muted">
+        <div className="site-footer__bottom">
+          <p className="site-footer__copyright">
             © {year} {siteConfig.name}. All rights reserved.
           </p>
 
-          <p className="flex items-center gap-3 font-display text-xs font-semibold tracking-[0.18em] text-on-dark-muted uppercase">
+          <p className="site-footer__tagline">
             {siteConfig.tagline}
-            <span className="h-0.5 w-9 bg-brand" aria-hidden="true" />
+            <span className="site-footer__tagline-bar" aria-hidden="true" />
           </p>
         </div>
       </Container>

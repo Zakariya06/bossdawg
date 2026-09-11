@@ -9,10 +9,20 @@
 
 @theme {
   /* --- Brand colors --- */
-  --color-brand: #f97316; /* Primary orange: buttons, icons, accents */
+  /* Primary orange: buttons, icons, accents. Sampled from the design plate
+     (255,117,0) — purer than the Tailwind orange this started as. */
+  --color-brand: #ff7300;
   --color-brand-dark: #d95c08; /* Hover / pressed state */
   --color-brand-light: #ff9540; /* Gradient start, soft highlights */
   --color-gold: #ffc24a; /* Gradient end, badge labels, star rating */
+  /* Photo-tag amber, sampled from the design plate (253,180,39) */
+  --color-amber: #fdb427;
+  /* Service-strip icon orange, sampled from the design plate (255,140,0) */
+  --color-flame: #ff8c00;
+  /* Amber CTA fill, sampled from "Explore Our Services" / "Get Started Today"
+     (253,171,25 -> 253,148,20). The design uses this, not the brand orange,
+     for the single-CTA sections. */
+  --color-amber-cta: #fda31a;
 
   /* --- Neutrals --- */
   --color-ink: #0d0d0d; /* Near-black: dark section backgrounds */
@@ -30,6 +40,19 @@
      torn edge that flows into a parchment section shows a hard line where the
      flat colour meets the image. */
   --color-parchment: #fdfbf7;
+  /* Flat paper behind the process steps, sampled from the plate (247,246,242) */
+  --color-paper: #f7f6f2;
+  /* Deeper orange of the process headline, step numbers and brush rule (249,96,9) */
+  --color-ember: #f96009;
+  /* Flat amber of the process CTA, sampled from the plate (252,171,20) */
+  --color-amber-bright: #fcab14;
+  /* Flat panel under the job flow card photos, sampled from the plate (19,19,19) */
+  --color-card-dark: #131313;
+  /* Cool white of the FAQ photograph's faded left side (250,251,248). The FAQ
+     section uses it as its ground so the photo edge never shows a seam. */
+  --color-paper-cool: #fafbf8;
+  /* Warm white of the contact sunset plate's sky (250,248,244) */
+  --color-sky-warm: #faf8f4;
   --color-line: #e4e1db; /* Hairline borders and dividers */
 
   --color-body: #3f3f3f; /* Body copy on light backgrounds */
@@ -53,6 +76,22 @@
      so it cannot push the section past one screen. */
   --text-display: min(clamp(2.5rem, 1.5rem + 3.9vw, 4.5rem), 10vh);
   --text-display--line-height: 1.02;
+  /* Largest step, for the storm response headline: the design sets it as a
+     three-line statement filling the copy column. vh-capped like the others. */
+  --text-display-xl: min(clamp(2.75rem, 1.4rem + 5.4vw, 6rem), 11vh);
+  --text-display-xl--line-height: 1;
+  /* Single-line centred section headline (process). Scales with width only, so
+     the line stays whole from tablet up; it wraps on phones. */
+  --text-display-wide: clamp(2.25rem, 5.4vw, 5.5rem);
+  --text-display-wide--line-height: 1.05;
+  /* Full-width left-aligned statement headline (job flow), one step above
+     --text-display-wide. Width-scaled so it holds one line from tablet up. */
+  --text-display-full: clamp(2.25rem, 5.8vw, 5.75rem);
+  --text-display-full--line-height: 1.05;
+  /* Largest centred statement (reviews). Tight leading per the plate — pair
+     with TextReveal's .text-reveal--tight so descenders are not masked. */
+  --text-display-2xl: clamp(2.25rem, 7.1vw, 6.5rem);
+  --text-display-2xl--line-height: 0.82;
   --text-h2: clamp(1.875rem, 1.2rem + 2.7vw, 3rem);
   --text-h2--line-height: 1.12;
   --text-h3: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem);
@@ -64,6 +103,12 @@
   /* Larger lede, for full-viewport statement sections */
   --text-lead-lg: clamp(1.125rem, 1rem + 0.55vw, 1.5rem);
   --text-lead-lg--line-height: 1.55;
+  /* Largest lede, paired with --text-display-wide */
+  --text-lead-xl: clamp(1.125rem, 0.8rem + 0.85vw, 1.625rem);
+  --text-lead-xl--line-height: 1.42;
+  /* One-line lede under a --text-display-full headline */
+  --text-lead-2xl: clamp(1.125rem, 0.4rem + 1.62vw, 1.875rem);
+  --text-lead-2xl--line-height: 1.4;
   --text-eyebrow: 0.8125rem;
   --text-eyebrow--line-height: 1.4;
 
@@ -96,6 +141,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
@@ -175,6 +221,26 @@
   .eyebrow--plain::before,
   .eyebrow--trailing::before {
     content: none;
+  }
+
+  /* Larger label, for sections led by a --text-display-wide headline */
+  .eyebrow--lg {
+    gap: 1.25rem;
+    font-size: clamp(0.8125rem, 0.65rem + 0.4vw, 1rem);
+    letter-spacing: 0.26em;
+  }
+
+  .eyebrow--lg::before {
+    width: 3.75rem;
+    height: 3px;
+  }
+
+  /* Trailing rule when centred: same size and orange as the leading one.
+     Doubled class so it outranks .eyebrow--centered::after, defined later. */
+  .eyebrow.eyebrow--lg::after {
+    width: 3.75rem;
+    height: 3px;
+    background-color: var(--color-brand);
   }
 
   /* ==================================================
@@ -268,6 +334,16 @@
   }
 
   /* Solid dark button, for use on light photographic backgrounds */
+  /* Amber call to action with dark text, per the design's single-CTA sections */
+  .button--amber {
+    background-image: linear-gradient(100deg, #fdab19 0%, #fd9414 100%);
+    color: var(--color-ink);
+  }
+
+  .button--amber:hover {
+    background-image: linear-gradient(100deg, #fd9d10 0%, #f4880a 100%);
+  }
+
   .button--dark {
     background-color: var(--color-ink);
     color: #fff;
@@ -294,15 +370,93 @@
     padding: 1.3rem 2.15rem;
   }
 
+  /* Largest button, for a section's single closing call to action. The right
+     padding is shorter because a trailing chevron carries its own space. */
+  .button--xl {
+    gap: 0.8rem;
+    font-size: clamp(1.125rem, 0.6rem + 1.45vw, 1.9rem);
+    padding: 1.2rem clamp(1.75rem, 0.6rem + 3vw, 3.5rem) 1.2rem clamp(2.5rem, 0.6rem + 5.1vw, 5.5rem);
+  }
+
+  /* Flat amber fill — the process CTA has no gradient */
+  .button--amber-solid {
+    background-color: var(--color-amber-bright);
+    background-image: none;
+    color: var(--color-ink);
+    box-shadow: 0 10px 24px rgba(252, 171, 20, 0.28);
+  }
+
+  .button--amber-solid:hover {
+    background-color: var(--color-amber-cta);
+    background-image: none;
+    box-shadow: 0 16px 32px rgba(252, 150, 20, 0.36);
+  }
+
+  /* Painted brand plate. The SVG sits behind the copy and is deliberately
+     larger than it, so the brush edge falls outside the text block. */
+  .brand-lockup {
+    position: relative;
+    display: inline-block;
+    color: var(--color-ink-deep);
+  }
+
+  .brand-lockup__plate {
+    position: absolute;
+    top: -8%;
+    left: -5%;
+    width: 110%;
+    height: 116%;
+    filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.45));
+  }
+
+  .brand-lockup__content {
+    position: relative;
+    padding: 1.05rem 1.7rem 1.25rem;
+  }
+
+  .brand-lockup__text {
+    font-family: var(--font-script);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.05rem, 1.95vh, 1.45rem);
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    color: #fff;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* Pulled up so it tucks under the second line rather than sitting apart */
+  /* Amber variant: the sign-written crew tag on the leaning-tree photo card.
+     Same painted plate, recoloured, with dark lettering. */
+  .brand-lockup--amber {
+    color: var(--color-amber);
+  }
+
+  .brand-lockup--amber .brand-lockup__text {
+    color: #241703;
+    font-size: clamp(1rem, 0.7rem + 0.75vw, 1.375rem);
+  }
+
+  .brand-lockup__rule {
+    display: block;
+    width: 96%;
+    height: 0.7rem;
+    margin-top: -0.15rem;
+  }
+
   /* Circular icon chip used beside stats and feature labels */
+  /* Dark disc with a thin gold ring and a gold glyph. Sampled from the
+     design plate: fill 6,0,7 and glyph 239,187,42 — not an orange outline. */
   .icon-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     border-radius: 9999px;
-    border: 1.5px solid var(--color-brand);
-    color: var(--color-brand);
+    border: 1.5px solid var(--color-gold);
+    background-color: rgba(6, 4, 6, 0.82);
+    color: var(--color-gold);
   }
 
   /* Filled variant — brand circle with a knocked-out glyph, used where the chip
@@ -321,10 +475,11 @@
     inset: 0;
     background: linear-gradient(
       100deg,
-      rgba(var(--scrim-rgb), 0.92) 0%,
-      rgba(var(--scrim-rgb), 0.78) 32%,
-      rgba(var(--scrim-rgb), 0.28) 58%,
-      rgba(var(--scrim-rgb), 0.05) 78%
+      rgba(var(--scrim-rgb), 0.94) 0%,
+      rgba(var(--scrim-rgb), 0.7) 20%,
+      rgba(var(--scrim-rgb), 0.32) 40%,
+      rgba(var(--scrim-rgb), 0.06) 62%,
+      rgba(var(--scrim-rgb), 0) 74%
     );
   }
 
@@ -361,7 +516,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(8, 8, 8, 0.7) 0%, rgba(8, 8, 8, 0) 28%);
+    background: linear-gradient(to bottom, rgba(8, 8, 8, 0.4) 0%, rgba(8, 8, 8, 0.16) 10%, rgba(8, 8, 8, 0) 22%);
   }
 
   /* Torn paper edge bridging a dark section into the white one below. Supplied
@@ -373,9 +528,11 @@
        here is what leaves a hard white line under the tear. */
     --torn-color: var(--color-surface);
     position: absolute;
-    left: 0;
-    right: 0;
-    /* -1px avoids a hairline gap from sub-pixel rounding */
+    /* Overhangs both sides: stretching a torn bitmap to exactly 100% leaves a
+       hairline of the section behind visible at the left and right edges. */
+    left: -1.5%;
+    right: -1.5%;
+    width: 103%;
     bottom: -1px;
     height: clamp(1.75rem, 4vw, 4.5rem);
     background-color: var(--torn-color);
@@ -394,19 +551,31 @@
   .torn-edge-top {
     --torn-color: var(--color-ink-deep);
     position: absolute;
-    left: 0;
-    right: 0;
-    top: -1px;
+    /* Overhangs both sides — see .torn-edge */
+    left: -1.5%;
+    right: -1.5%;
+    width: 103%;
+    /* Starts 6px up inside the dark section above. The asset's top pixel row
+       is only half opaque, so flush with the boundary it let the light section
+       show through as a hairline; overlapping hides that row against the dark. */
+    top: -6px;
     z-index: 1;
-    height: clamp(1.75rem, 4vw, 4.5rem);
+    height: calc(clamp(1.75rem, 4vw, 4.5rem) + 6px);
     background-color: var(--torn-color);
     -webkit-mask: url('/assets/torn-edge-top.webp') top center / 100% 100% no-repeat;
     mask: url('/assets/torn-edge-top.webp') top center / 100% 100% no-repeat;
     pointer-events: none;
   }
 
+  /* The tear into the process section uses a longer, rougher edge: three
+     copies of the torn shape, each trimmed of its empty end columns, with the
+     middle one mirrored so the joins run on seamlessly, giving a jagged up-and-down edge rather than one broad curve. */
+  .process .torn-edge-top {
+    -webkit-mask-image: url("/assets/torn-edge-process.webp");
+    mask-image: url("/assets/torn-edge-process.webp");
+  }
+
   /* Sections that flow into a parchment panel */
-  .services-intro .torn-edge,
   .leaning-tree .torn-edge {
     --torn-color: var(--color-parchment);
   }
@@ -446,17 +615,25 @@
   }
 
   /* Handwritten-style caption tag pinned under each hero photo */
+  /* Hand-lettered amber label clipped to the corner of a photo card. The
+     design sets these in the marker face, not the display face — that is what
+     gives them the sign-written look. */
   .photo-tag {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.6875rem;
-    line-height: 1.25;
-    letter-spacing: 0.02em;
+    font-family: var(--font-script);
+    /* The design letters this slanted — Permanent Marker ships upright only,
+       so the slant is synthesised rather than coming from a real italic cut. */
+    font-style: italic;
+    font-size: 0.9375rem;
+    line-height: 1.18;
+    letter-spacing: 0.015em;
+    text-align: center;
     text-transform: uppercase;
-    color: var(--color-ink);
-    background-color: var(--color-gold);
-    padding: 0.4rem 0.7rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+    white-space: nowrap;
+    color: #241703;
+    background-color: var(--color-amber);
+    padding: 0.55rem 1rem;
+    border-radius: 0.7rem;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.42);
   }
 
   /* ==================================================
@@ -481,6 +658,50 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
   }
 
+  /* Large badge over the hero, as in the design; shrinks when the bar turns solid */
+  .site-header__logo {
+    width: clamp(4rem, 1.5rem + 8.1vw, 8.8rem);
+    height: clamp(4rem, 1.5rem + 8.1vw, 8.8rem);
+    transition:
+      width 300ms var(--ease-out-soft),
+      height 300ms var(--ease-out-soft),
+      transform 300ms var(--ease-out-soft);
+  }
+
+  .site-header--scrolled .site-header__logo {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  /* The bar aligns to the top, so these offsets put the nav and actions on the
+     design's nav line over the hero, then centre them on the 4rem logo. */
+  .site-header__nav,
+  .site-header__actions {
+    transition: margin-top 300ms var(--ease-out-soft);
+  }
+
+  .site-header__nav {
+    margin-top: 1rem;
+  }
+
+  .site-header--scrolled .site-header__nav {
+    margin-top: 0.75rem;
+  }
+
+  .site-header__actions {
+    margin-top: 0.625rem;
+  }
+
+  @media (min-width: 768px) {
+    .site-header__actions {
+      margin-top: 0;
+    }
+
+    .site-header--scrolled .site-header__actions {
+      margin-top: 0.25rem;
+    }
+  }
+
   .site-header__link {
     position: relative;
     font-family: var(--font-display);
@@ -503,7 +724,7 @@
     bottom: 0;
     width: 100%;
     height: 2px;
-    background-color: var(--color-brand);
+    background-color: var(--color-amber-cta);
     transform: scaleX(0);
     transition: transform var(--duration-ui) var(--ease-out-soft);
   }
@@ -556,12 +777,15 @@
      screen instead of overflowing it. */
   .hero__content {
     padding-top: clamp(4.25rem, 11vh, 8rem);
-    /* Bottom padding clears the torn edge overlay so text never sits on it. */
-    padding-bottom: clamp(3rem, 9vh, 7rem);
+    /* Clears the torn edge overlay AND the bar below it, so nothing in the
+       hero crowds the property strip. */
+    padding-bottom: clamp(4.5rem, 13vh, 9.5rem);
   }
 
   .hero__photo {
-    width: clamp(140px, 21vh, 212px);
+    /* Design plate: each card is ~14% of the page width. vh-capped so the two
+       stacked cards still fit the one-screen hero on short viewports. */
+    width: clamp(170px, 27vh, 268px);
   }
 
   /* Vertical rhythm inside the hero copy. Also expressed in vh so the stack
@@ -730,8 +954,26 @@
      the copy sits on solid colour rather than on the image. */
   .services-intro {
     position: relative;
+    z-index: 1;
     overflow: hidden;
     background-color: var(--color-ink-deep);
+    /* A slight softening of both bottom corners, per the design, not a pill curve */
+    border-bottom-left-radius: clamp(0.75rem, 1.1vw, 1.125rem);
+    border-bottom-right-radius: clamp(0.75rem, 1.1vw, 1.125rem);
+  }
+
+  /* The next section tucks up under the curve so its own background fills the
+     corners, rather than the page colour showing through them. The extra top
+     padding gives back the height the negative margin takes. */
+  .services-intro + .properties-served {
+    margin-top: calc(-1 * clamp(0.75rem, 1.1vw, 1.125rem));
+    padding-top: calc(var(--spacing-section-mobile) + clamp(0.75rem, 1.1vw, 1.125rem));
+  }
+
+  @media (min-width: 768px) {
+    .services-intro + .properties-served {
+      padding-top: calc(var(--spacing-section) + clamp(0.75rem, 1.1vw, 1.125rem));
+    }
   }
 
   /* Shared photo panel: flat dark surface with the photograph inset to the
@@ -780,14 +1022,39 @@
       );
   }
 
+  /* Full-bleed variant: the photograph covers the whole panel at every width
+     instead of sitting inset to the right. Used by the services intro, whose
+     design shows the whole photo with no flat panel beside it. */
+  @media (min-width: 1024px) {
+    .photo-panel--full .photo-panel__media {
+      left: 0;
+    }
+  }
+
+  /* Soft dark ellipse behind the copy, in place of an edge-to-edge fade. The
+     photo stays visible around and through it; only the area the text sits
+     on is darkened, which is what the design does. */
+  .services-intro__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 58% 72% at 17% 52%,
+      rgba(15, 10, 6, 0.86) 0%,
+      rgba(15, 10, 6, 0.64) 40%,
+      rgba(15, 10, 6, 0.24) 68%,
+      rgba(15, 10, 6, 0) 100%
+    );
+  }
+
   /* Solid bar carrying the five services, full width edge to edge. */
   .services-intro__strip {
     position: relative;
     background-color: var(--color-ink-deep);
     border-top: 1px solid rgba(255, 255, 255, 0.11);
-    padding-top: clamp(2rem, 3.5vw, 2.75rem);
-    /* Clears the torn edge pinned to the bottom of the section */
-    padding-bottom: clamp(4.5rem, 7vw, 6.5rem);
+    padding-top: clamp(2.25rem, 3.5vw, 3rem);
+    /* Room for the curved bottom corners */
+    padding-bottom: clamp(2.75rem, 4.5vw, 4rem);
   }
 
   .service-strip__item {
@@ -799,6 +1066,28 @@
     padding-inline: 0.5rem;
   }
 
+  .service-strip__icon {
+    width: clamp(3.25rem, 2rem + 3.2vw, 5rem);
+    height: clamp(3.25rem, 2rem + 3.2vw, 5rem);
+    color: var(--color-flame);
+  }
+
+  .service-strip__title {
+    margin-top: clamp(0.875rem, 1.2vw, 1.25rem);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.125rem, 0.7rem + 1.1vw, 1.5rem);
+    line-height: 1.18;
+    color: #fff;
+  }
+
+  .service-strip__desc {
+    margin-top: 0.625rem;
+    font-size: clamp(0.95rem, 0.62rem + 0.9vw, 1.25rem);
+    line-height: 1.38;
+    color: #d9d6d2;
+  }
+
   /* Hairline dividers between items, once they sit on a single row */
   @media (min-width: 768px) {
     .service-strip__item + .service-strip__item::before {
@@ -808,7 +1097,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: rgba(255, 255, 255, 0.13);
+      background-color: #706c69;
     }
   }
 
@@ -821,6 +1110,17 @@
     overflow: hidden;
     min-height: 100svh;
     background-color: var(--color-ink-deep);
+  }
+
+  /* Settles the photograph onto solid colour at the base, so the torn edge cut
+     into the machinery section below meets flat colour rather than the photo. */
+  .tough-jobs::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: clamp(4rem, 9vw, 8rem);
+    background: linear-gradient(to bottom, rgba(15, 10, 6, 0) 0%, var(--color-ink-deep) 82%);
+    pointer-events: none;
   }
 
   /* Fluid like the hero, so the section keeps fitting one screen as the
@@ -867,13 +1167,13 @@
   .modal-panel {
     position: relative;
     width: 100%;
-    max-width: 70rem;
+    max-width: 76rem;
     /* No inner scrolling: overflow:hidden only clips the photograph to the
        panel's rounded corners. Height is free, and the overlay scrolls. */
     margin: auto;
     overflow: hidden;
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.45);
     background-color: var(--color-ink-deep);
     box-shadow: 0 48px 110px rgba(0, 0, 0, 0.68);
     /* Resting state doubles as the exit: leaving is quicker and drops away,
@@ -911,40 +1211,113 @@
       transform 480ms var(--ease-out-soft) 120ms;
   }
 
+  /* Dark disc with a white ring and white cross, per the design */
   .modal-close {
     position: absolute;
-    top: 1.1rem;
-    right: 1.1rem;
+    top: 1.0625rem;
+    right: 0.9rem;
     z-index: 2;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.875rem;
+    height: 2.875rem;
     border-radius: 9999px;
-    background-color: rgba(255, 255, 255, 0.94);
-    color: var(--color-ink-deep);
+    border: 2px solid #fff;
+    background-color: rgba(8, 6, 5, 0.6);
+    color: #fff;
     transition:
       background-color var(--duration-ui) var(--ease-out-soft),
+      border-color var(--duration-ui) var(--ease-out-soft),
       transform var(--duration-ui) var(--ease-out-soft);
   }
 
   .modal-close:hover {
-    background-color: #fff;
+    border-color: var(--color-brand);
+    background-color: var(--color-brand);
     transform: rotate(90deg);
   }
 
-  /* Torn edge biting the panel colour into the photograph's right edge.
-     Uses the shared torn edge asset, rotated so it runs vertically. */
+  /* Dry-brush edge between photograph and form, traced from the design's own
+     artwork (a 17.5%-of-panel band ending at the column boundary). The mask's
+     right side is solid, so it meets the form column with no seam; its left
+     side breaks up into bristle marks and spatter over the photo. */
   .modal-media__edge {
     position: absolute;
-    top: -1px;
-    bottom: -1px;
+    top: 0;
+    bottom: 0;
     right: -1px;
-    width: clamp(1.25rem, 3vw, 2.5rem);
+    width: calc(34.4% + 1px);
     background-color: var(--color-ink-deep);
-    -webkit-mask: url('/assets/torn-edge-right.webp') center / 100% 100% no-repeat;
-    mask: url('/assets/torn-edge-right.webp') center / 100% 100% no-repeat;
+    -webkit-mask: url('/assets/modal-photo-edge.webp') center / 100% 100% no-repeat;
+    mask: url('/assets/modal-photo-edge.webp') center / 100% 100% no-repeat;
+  }
+
+  /* Form column, sized from the design at 1440: 87px title, 62px fields, 69px button */
+  .modal-form {
+    padding: clamp(3.5rem, 1rem + 7.6vw, 7.8rem) clamp(1.25rem, 0.5rem + 2.1vw, 2.35rem)
+      clamp(1.75rem, 0.8rem + 2.1vw, 2.7rem);
+  }
+
+  @media (min-width: 1024px) {
+    .modal-form {
+      padding-left: 1.2rem;
+    }
+
+    /* Each title line stays whole; "About to Fall?" runs into the right padding,
+       past the fields' edge, exactly as the design sets it */
+    .modal-form__title {
+      white-space: nowrap;
+    }
+  }
+
+  .modal-form__title {
+    font-size: clamp(2.5rem, 0.5rem + 5.5vw, 5.5rem);
+    line-height: 0.8;
+    color: #fff;
+  }
+
+  .modal-form__lead {
+    margin-top: 1.2rem;
+    font-size: clamp(1.125rem, 0.35rem + 1.55vw, 1.75rem);
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  .modal-form__sub {
+    margin-top: 0.15rem;
+    font-size: clamp(1rem, 0.35rem + 1.25vw, 1.5rem);
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  .modal-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8125rem;
+    margin-top: clamp(1.25rem, 0.6rem + 1.2vw, 1.8rem);
+  }
+
+  /* Orange pill with dark text and a chevron, per the design */
+  .modal-form__submit {
+    width: 100%;
+    margin-top: 0.4375rem;
+    gap: 0.5em;
+    padding-block: clamp(1rem, 0.6rem + 0.75vw, 1.3rem);
+    background-color: var(--color-brand);
+    color: var(--color-ink);
+    font-size: clamp(1.0625rem, 0.35rem + 1.3vw, 1.5rem);
+  }
+
+  .modal-form__submit:hover {
+    background-color: var(--color-brand-light);
+  }
+
+  .modal-form__note {
+    margin-top: 0.4375rem;
+    text-align: center;
+    font-size: clamp(0.875rem, 0.55rem + 0.6vw, 1.125rem);
+    color: var(--color-on-dark-muted);
   }
 
   /* ---------- Fields on dark surfaces ---------- */
@@ -952,12 +1325,12 @@
   .field-dark {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1.45rem;
     width: 100%;
-    border-radius: 0.625rem;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background-color: rgba(255, 255, 255, 0.06);
-    padding: 1.05rem 1.15rem;
+    border-radius: 0.6875rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.09);
+    padding: 1rem 1.25rem;
     text-align: left;
     transition:
       border-color var(--duration-ui) var(--ease-out-soft),
@@ -976,9 +1349,19 @@
     box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
   }
 
+  /* Solid white glyphs, per the design */
   .field-dark__icon {
     flex-shrink: 0;
-    color: var(--color-brand);
+    width: 1.75rem;
+    height: 1.75rem;
+    color: #fff;
+  }
+
+  .field-dark__input,
+  .field-dark__value {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 0.65rem + 0.5vw, 1.125rem);
+    line-height: 1.5;
   }
 
   .field-dark__input {
@@ -986,8 +1369,17 @@
     background: transparent;
     border: none;
     outline: none;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    color: #fff;
+  }
+
+  .field-dark__value {
+    flex: 1;
+  }
+
+  .field-dark__chevron {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
     color: #fff;
   }
 
@@ -1050,89 +1442,231 @@
     font-weight: 600;
   }
 
-  /* Contact: full-bleed sunset plate carrying the copy and the quote form. */
+  /* Contact: the sunset plate framed exactly as the design has it — full
+     width, pinned to the top of the section, with no washes or fades over it.
+     The section is at least as tall as the plate's sky and lake, so its bottom
+     edge lands inside the plate's own dark treeline band, which runs straight
+     on into the footer. */
   .contact {
     position: relative;
-    display: flex;
-    align-items: center;
     isolation: isolate;
     overflow: hidden;
-    /* Keeps the plate close to its own 1.22 aspect so the sunset and the
-       treeline both stay in frame rather than being cropped to a letterbox. */
-    min-height: clamp(34rem, 60vw, 54rem);
-    background-color: var(--color-parchment);
+    background-color: var(--color-sky-warm);
   }
 
+  /* Blends the plate's neutral black band into the footer's warm black, so the
+     join has no straight colour line. Sits entirely inside the dark band. */
+  .contact::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    z-index: -1;
+    height: 3.5rem;
+    background: linear-gradient(to bottom, rgba(15, 10, 6, 0), var(--color-ink-deep));
+    pointer-events: none;
+  }
+
+  /* Phones and tablets: the stacked content is far taller than the plate,
+     so it covers the section instead. Framed on the plate's right side, so the
+     tall pines and the island treeline sit behind the content rather than
+     the empty sky at its centre. */
   .contact__backdrop {
     position: absolute;
     inset: 0;
     z-index: -2;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    /* Anchored to the bottom so the treeline, sunset and the plate's own
-       dark band always sit on the section's lower edge — the join into the
-       footer then reads as continuous. All cropping is taken off the top,
-       where the artwork is empty sky, so no tree is sliced mid-trunk. */
-    object-position: center bottom;
+    object-position: 85% center;
   }
 
-  /* Three jobs, bottom layer first:
-       1. a white bleed along the very top, so the torn edge of the section
-          above melts into the plate instead of leaving a hard seam;
-       2. a wash anchored top-left, keeping the copy on light ground however
-          the plate crops — without it the address and 'Free Estimates' lines
-          sit on the sunset and disappear;
-       3. a fallback join into the footer for crops that trim the plate's own
-          dark band. */
-  .contact__fade {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      linear-gradient(to bottom, #fdfbf7 0%, rgba(253, 251, 247, 0.72) 3%, rgba(253, 251, 247, 0) 9%),
-      radial-gradient(
-        122% 128% at 0% 4%,
-        rgba(253, 251, 247, 0.97) 0%,
-        rgba(253, 251, 247, 0.9) 32%,
-        rgba(253, 251, 247, 0.44) 54%,
-        rgba(253, 251, 247, 0) 74%
-      ),
-      linear-gradient(to bottom, rgba(15, 10, 6, 0) 92%, var(--color-ink-deep) 100%);
+  @media (min-width: 1024px) {
+    /* Content is centred in the light part of the plate: between the torn edge
+       at the top and the dark treeline band at the bottom. */
+    .contact {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* 63.5vw is the lowest point of the plate's dark band at this framing
+         (band top at 77.07% of the plate, plate 82.4% of its width tall); the
+         extra keeps the footer blend inside solid dark */
+      min-height: calc(63.5vw + 2.5rem);
+    }
+
+    .contact__backdrop {
+      inset: 0 auto auto 50%;
+      width: 100.8%;
+      /* The base img rule caps width at 100% */
+      max-width: none;
+      height: auto;
+      transform: translateX(-50%);
+      object-fit: fill;
+    }
   }
 
-  /* Contact detail: orange glyph on a dark disc */
+  .contact__eyebrow {
+    gap: clamp(0.875rem, 0.4rem + 0.9vw, 1.25rem);
+    font-size: clamp(0.8125rem, 0.5rem + 0.65vw, 1.125rem);
+    letter-spacing: 0.2em;
+  }
+
+  .contact__eyebrow::before {
+    width: clamp(2.25rem, 1rem + 2.1vw, 3rem);
+    height: 4px;
+    background-color: var(--color-ember);
+  }
+
+  /* The plate sets "your trees." much larger than the first line, so both run
+     the same width. Tight leading — used with .text-reveal--tight. */
+  .contact__heading {
+    font-size: clamp(2rem, 5.38vw, 5rem);
+    line-height: 0.76;
+    color: var(--color-ink);
+  }
+
+  .contact__heading > span:last-child {
+    display: block;
+    font-size: 1.42em;
+  }
+
+  .contact__lede {
+    font-size: clamp(1.0625rem, 0.4rem + 1.47vw, 1.75rem);
+    line-height: 1.33;
+  }
+
+  .contact__points {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.2rem + 1.4vw, 1.4375rem);
+  }
+
+  .contact-point {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.875rem, 0.2rem + 2.4vw, 2.375rem);
+  }
+
+  /* Contact detail: gold glyph in a gold ring on a black disc */
   .contact-point__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 3rem;
-    height: 3rem;
+    width: clamp(3rem, 0.9rem + 4vw, 4.5rem);
+    height: clamp(3rem, 0.9rem + 4vw, 4.5rem);
     flex-shrink: 0;
     border-radius: 9999px;
-    background-color: var(--color-ink-deep);
-    color: var(--color-brand);
+    border: 2.5px solid var(--color-amber-cta);
+    background-color: var(--color-ink);
+    color: var(--color-amber-cta);
+    transition: transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  a.contact-point:hover .contact-point__icon {
+    transform: scale(1.06);
+  }
+
+  .contact-point__title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.0625rem, 0.5rem + 1.25vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--color-ink);
+  }
+
+  .contact-point__detail {
+    display: block;
+    font-size: clamp(0.9375rem, 0.45rem + 1.1vw, 1.4375rem);
+    line-height: 1.3;
+    color: var(--color-ink-soft);
   }
 
   /* Quote form card */
   .quote-card {
+    --quote-gap: clamp(0.625rem, 0.3rem + 0.7vw, 0.9375rem);
     border-radius: 1.25rem;
-    background-color: rgba(255, 255, 255, 0.97);
-    box-shadow: 0 24px 60px rgba(20, 51, 43, 0.22);
-    backdrop-filter: blur(4px);
+    background-color: #fff;
+    padding: clamp(1.25rem, 0.5rem + 1.2vw, 1.5625rem) clamp(1.25rem, 0.6rem + 1.9vw, 2.3125rem)
+      clamp(1.25rem, 0.5rem + 1.55vw, 1.875rem);
+    box-shadow:
+      0 28px 60px rgba(13, 13, 13, 0.2),
+      0 6px 18px rgba(13, 13, 13, 0.08);
+  }
+
+  .quote-card__title {
+    font-size: clamp(1.75rem, 0.5rem + 3.15vw, 3.375rem);
+    line-height: 1.1;
+    color: var(--color-ink);
+  }
+
+  .quote-card__subtitle {
+    font-size: clamp(0.9375rem, 0.5rem + 0.87vw, 1.3125rem);
+    line-height: 1.4;
+    color: var(--color-body);
+  }
+
+  .quote-card__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--quote-gap);
+  }
+
+  .quote-card__row {
+    display: grid;
+    gap: var(--quote-gap);
+  }
+
+  @media (min-width: 640px) {
+    .quote-card__row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* Large, squared-off submit in the plate's deep theme orange */
+  .quote-card__submit {
+    width: 100%;
+    margin-top: 0.125rem;
+    gap: 0.9em;
+    border-radius: 0.6875rem;
+    padding-block: clamp(0.875rem, 0.25rem + 1.35vw, 1.5rem);
+    background-color: var(--color-ember);
+    color: #fff;
+    font-size: clamp(1.125rem, 0.35rem + 1.6vw, 1.8rem);
+    font-weight: 600;
+    box-shadow: 0 10px 24px rgba(249, 96, 9, 0.28);
+  }
+
+  .quote-card__submit:hover {
+    background-color: var(--color-brand-dark);
+    box-shadow: 0 14px 30px rgba(249, 96, 9, 0.36);
+  }
+
+  .quote-card__note {
+    margin-top: 0.1875rem;
+    text-align: center;
+    font-size: clamp(0.875rem, 0.5rem + 0.74vw, 1.1875rem);
+    line-height: 1.4;
+    color: var(--color-body);
   }
 
   .form-field {
     width: 100%;
     border-radius: 0.5rem;
-    border: 1px solid var(--color-line);
+    border: 1px solid rgba(13, 13, 13, 0.07);
     background-color: var(--color-surface-muted);
-    padding: 0.875rem 1rem;
+    padding: clamp(0.75rem, 0.35rem + 0.7vw, 1rem) clamp(1rem, 0.5rem + 1.05vw, 1.5625rem);
     font-family: var(--font-body);
-    font-size: 0.9375rem;
-    color: var(--color-heading);
+    font-size: clamp(0.9375rem, 0.6rem + 0.5vw, 1.0625rem);
+    line-height: 1.5;
+    color: var(--color-ink);
     transition:
       border-color var(--duration-ui) var(--ease-out-soft),
       background-color var(--duration-ui) var(--ease-out-soft),
       box-shadow var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .form-field--textarea {
+    min-height: clamp(7rem, 3.5rem + 6.25vw, 9.125rem);
   }
 
   .form-field::placeholder {
@@ -1154,18 +1688,74 @@
     border-color: #c0392b;
   }
 
-  /* Footer */
+  /* Footer: large badge and an amber rule, then the menu over the address and
+     phone, social icons on the right; copyright and tagline beneath. Sized from
+     the design plate. */
   .site-footer {
     background-color: var(--color-ink-deep);
     color: var(--color-on-dark);
   }
 
+  /* Little top padding: the contact plate's dark band above already gives the
+     badge its breathing room, as in the design */
+  .site-footer__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 0.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .site-footer__main {
+      flex-direction: row;
+      align-items: center;
+      gap: clamp(1.5rem, 0.5rem + 2.25vw, 2.625rem);
+    }
+  }
+
+  .site-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.5rem, 0.5rem + 2.4vw, 2.8rem);
+  }
+
+  .site-footer__logo {
+    width: clamp(6rem, 2rem + 9.85vw, 10.875rem);
+    height: clamp(6rem, 2rem + 9.85vw, 10.875rem);
+  }
+
+  .site-footer__divider {
+    display: none;
+    flex-shrink: 0;
+    width: 1.5px;
+    height: clamp(4rem, 1rem + 6.9vw, 7.2rem);
+    background-color: var(--color-amber-cta);
+  }
+
+  @media (min-width: 1024px) {
+    .site-footer__divider {
+      display: block;
+    }
+  }
+
+  .site-footer__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .site-footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem clamp(1.5rem, 0.4rem + 3.4vw, 3.5rem);
+  }
+
   .site-footer__link {
     position: relative;
-    font-family: var(--font-display);
-    font-size: 0.9375rem;
-    font-weight: 500;
-    color: var(--color-on-dark);
+    font-size: clamp(1rem, 0.6rem + 0.6vw, 1.125rem);
+    line-height: 1.5;
+    color: #fff;
     transition: color var(--duration-ui) var(--ease-out-soft);
   }
 
@@ -1174,17 +1764,90 @@
     color: var(--color-brand);
   }
 
+  .site-footer__contact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem clamp(2rem, 1rem + 5.2vw, 5.75rem);
+  }
+
+  .site-footer__address {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 0.2rem + 0.6vw, 1rem);
+    font-size: clamp(0.9375rem, 0.6rem + 0.6vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  /* Solid pin; its glyph fills about 60% of the box, so the box is oversized */
+  .site-footer__pin {
+    flex-shrink: 0;
+    width: clamp(2rem, 1rem + 2.35vw, 3.125rem);
+    height: clamp(2rem, 1rem + 2.35vw, 3.125rem);
+    color: var(--color-amber-cta);
+  }
+
+  .site-footer__phone {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.4rem + 0.8vw, 1.3rem);
+    transition: opacity var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-footer__phone:hover {
+    opacity: 0.85;
+  }
+
+  .site-footer__phone-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: clamp(2.75rem, 1.5rem + 2.1vw, 3.5rem);
+    height: clamp(2.75rem, 1.5rem + 2.1vw, 3.5rem);
+    border: 2px solid var(--color-amber-cta);
+    border-radius: 9999px;
+    color: var(--color-amber-cta);
+  }
+
+  .site-footer__phone-number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.0625rem, 0.6rem + 0.85vw, 1.375rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: #fff;
+  }
+
+  .site-footer__phone-hours {
+    display: block;
+    font-size: clamp(0.875rem, 0.55rem + 0.55vw, 1.0625rem);
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .site-footer__socials {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 0.1rem + 2vw, 1.9rem);
+  }
+
   .site-footer__social {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 3rem;
+    height: 3rem;
     border-radius: 9999px;
     color: #fff;
     transition:
       background-color var(--duration-ui) var(--ease-out-soft),
       transform var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .site-footer__social svg {
+    width: clamp(1.75rem, 1rem + 1.55vw, 2.375rem);
+    height: clamp(1.75rem, 1rem + 1.55vw, 2.375rem);
   }
 
   .site-footer__social:hover {
@@ -1193,11 +1856,47 @@
   }
 
   .site-footer__bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 0.5rem + 1.2vw, 1.9rem) 0 clamp(1.5rem, 0.5rem + 2.4vw, 2.875rem);
+  }
+
+  @media (min-width: 640px) {
+    .site-footer__bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .site-footer__copyright {
+    font-size: clamp(0.8125rem, 0.5rem + 0.55vw, 1rem);
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .site-footer__tagline {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.4rem + 0.8vw, 1.375rem);
+    font-family: var(--font-display);
+    font-size: clamp(0.75rem, 0.5rem + 0.5vw, 0.975rem);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.86);
+  }
+
+  .site-footer__tagline-bar {
+    flex-shrink: 0;
+    width: clamp(2.5rem, 1.5rem + 2.15vw, 3.5rem);
+    height: 5px;
+    background-color: var(--color-amber-cta);
   }
 
   /* Reviews: dark section over the stump backdrop, carrying the rating badge,
-     a Swiper carousel of reviews and the contact strip. */
+     a Swiper carousel of reviews and the contact strip. Accent is the plate's
+     amber (--color-amber-cta), not the brand orange. */
   .reviews {
     position: relative;
     isolation: isolate;
@@ -1216,19 +1915,29 @@
     object-position: center top;
   }
 
-  /* Darkens the photograph so the cards and copy hold up over it */
+  /* Light fade so the forest and stump stay visible, per the plate (~40% over
+     the open photograph), deepened behind the centre where the copy and cards
+     sit, and toward the bottom edge. */
   .reviews__scrim {
     position: absolute;
     inset: 0;
     z-index: -1;
     background:
+      radial-gradient(ellipse 58% 62% at 50% 52%, rgba(8, 8, 5, 0.42) 0%, rgba(8, 8, 5, 0) 72%),
       linear-gradient(
         to bottom,
-        rgba(15, 10, 6, 0.82) 0%,
-        rgba(15, 10, 6, 0.7) 45%,
-        rgba(15, 10, 6, 0.94) 92%,
-        var(--color-ink-deep) 100%
+        rgba(15, 10, 6, 0.4) 0%,
+        rgba(15, 10, 6, 0.46) 50%,
+        rgba(15, 10, 6, 0.68) 90%,
+        rgba(15, 10, 6, 0.82) 100%
       );
+  }
+
+  .reviews__eyebrow {
+    gap: clamp(0.875rem, 0.3rem + 1.3vw, 1.5rem);
+    font-size: clamp(0.8125rem, 0.5rem + 0.65vw, 1.125rem);
+    font-weight: 500;
+    letter-spacing: 0.3em;
   }
 
   /* Eyebrow with a rule on both sides, centred */
@@ -1241,35 +1950,125 @@
     flex-shrink: 0;
   }
 
+  /* Thick amber rules either side of the reviews label */
+  .reviews__eyebrow::before,
+  .reviews__eyebrow::after {
+    width: clamp(2.25rem, 1rem + 2.6vw, 3.25rem);
+    height: 4px;
+    background-color: var(--color-amber-cta);
+  }
+
+  /* Row of rating stars; size and spacing are set per use via custom properties */
+  .star-row {
+    display: flex;
+    gap: var(--star-gap, 0);
+    color: var(--color-amber);
+  }
+
+  .star-row svg {
+    flex-shrink: 0;
+    width: var(--star-size, 1.25rem);
+    height: var(--star-size, 1.25rem);
+  }
+
   /* Rating badge pill */
   .rating-badge {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem 1.25rem;
-    padding: 0.875rem 1.5rem;
+    gap: 0.75rem clamp(0.875rem, 0.2rem + 1.65vw, 1.6875rem);
+    padding: clamp(0.75rem, 0.45rem + 1.15vw, 1.5rem) clamp(1.25rem, 0.3rem + 2.9vw, 3.25rem);
     border-radius: var(--radius-pill);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background-color: rgba(15, 10, 6, 0.72);
-    backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+  }
+
+  .rating-badge__group {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.625rem, 0.3rem + 1.4vw, 1.5625rem);
+  }
+
+  .rating-badge__google {
+    flex-shrink: 0;
+    width: clamp(2.25rem, 0.9rem + 3.2vw, 3.8rem);
+    height: clamp(2.25rem, 0.9rem + 3.2vw, 3.8rem);
+  }
+
+  .rating-badge__score {
+    font-family: var(--font-display);
+    font-size: clamp(1.875rem, 0.8rem + 2.75vw, 3.25rem);
+    font-weight: 800;
+    line-height: 1;
+    color: #fff;
+  }
+
+  /* The star icon carries its own side-bearing, so pull the row in a little */
+  .rating-badge__stars {
+    --star-size: clamp(1.5rem, 0.6rem + 2.1vw, 2.5rem);
+    --star-gap: 2px;
+    margin-left: -0.55rem;
   }
 
   .rating-badge__divider {
-    width: 1px;
-    align-self: stretch;
-    background-color: rgba(255, 255, 255, 0.16);
+    width: 1.5px;
+    height: clamp(2.25rem, 1rem + 2.9vw, 3.9rem);
+    background-color: rgba(253, 163, 26, 0.55);
   }
 
-  /* Review card */
+  .rating-badge__count {
+    font-size: clamp(0.9375rem, 0.55rem + 0.73vw, 1.25rem);
+    color: #fff;
+  }
+
+  .rating-badge__bbb {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.3rem + 2.3vw, 2.5625rem);
+    margin-left: clamp(0rem, -0.5rem + 1.5vw, 1.375rem);
+  }
+
+  /* Torch over the BBB letters, as the accreditation mark is drawn */
+  .rating-badge__bbb-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: clamp(0.875rem, 0.4rem + 0.9vw, 1.3rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .rating-badge__bbb-logo svg {
+    width: clamp(2.25rem, 0.9rem + 3.45vw, 4rem);
+    height: clamp(2.25rem, 0.9rem + 3.45vw, 4rem);
+    margin-bottom: -0.35em;
+  }
+
+  .rating-badge__bbb-text {
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: clamp(0.9375rem, 0.5rem + 0.85vw, 1.3125rem);
+    font-weight: 600;
+    line-height: 1.38;
+    color: #fff;
+  }
+
+  /* Review card: frosted glass panel with a light hairline */
   .review-card {
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-card);
-    border: 1px solid rgba(255, 255, 255, 0.11);
-    background-color: rgba(255, 255, 255, 0.055);
-    padding: 1.25rem;
-    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    background-color: rgba(255, 255, 255, 0.12);
+    /* Narrower on the right: the plate's longest quote lines run close to the edge */
+    padding: clamp(1.25rem, 0.6rem + 1.08vw, 1.5625rem) clamp(0.875rem, 0.15rem + 1.1vw, 1.25rem)
+      clamp(1.25rem, 0.6rem + 1vw, 1.5rem) clamp(1.125rem, 0.25rem + 1.7vw, 1.75rem);
+    backdrop-filter: blur(8px);
     transition:
       transform var(--duration-ui) var(--ease-out-soft),
       border-color var(--duration-ui) var(--ease-out-soft),
@@ -1278,93 +2077,266 @@
 
   .review-card:hover {
     transform: translateY(-6px);
-    border-color: rgba(249, 115, 22, 0.55);
-    background-color: rgba(255, 255, 255, 0.09);
+    border-color: var(--color-amber-cta);
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .review-card__stars {
+    --star-size: clamp(1.375rem, 0.6rem + 1.42vw, 1.875rem);
+    --star-gap: 1px;
+  }
+
+  .review-card__quote {
+    flex: 1;
+    margin-top: 0.875rem;
+    font-size: clamp(1rem, 0.5rem + 0.88vw, 1.3125rem);
+    line-height: 1.42;
+    color: #fff;
+  }
+
+  /* The plate sets the avatar slightly outside the text column */
+  .review-card__author {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.3rem + 0.9vw, 1.25rem);
+    margin-top: 1.25rem;
+    margin-left: clamp(-0.45rem, -0.1rem - 0.35vw, 0rem);
   }
 
   /* Circular thumbnail beside the reviewer's name. Holds a job-site
      photograph rather than a portrait — see the note in ReviewsSection. */
   .review-card__avatar {
     position: relative;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: clamp(3.5rem, 1.5rem + 4.4vw, 5.5rem);
+    height: clamp(3.5rem, 1.5rem + 4.4vw, 5.5rem);
     flex-shrink: 0;
     overflow: hidden;
     border-radius: 9999px;
-    border: 2px solid var(--color-brand);
+    border: 2px solid rgba(255, 255, 255, 0.75);
   }
 
-  /* Carousel navigation arrows */
+  .review-card__name {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 0.45rem + 0.8vw, 1.1875rem);
+    font-weight: 700;
+    line-height: 1.5;
+    color: #fff;
+  }
+
+  .review-card__location {
+    display: block;
+    font-size: clamp(0.875rem, 0.45rem + 0.68vw, 1.0625rem);
+    line-height: 1.5;
+    color: var(--color-on-dark-muted);
+  }
+
+  /* Carousel navigation arrows: solid white discs, per the plate */
   .reviews__nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: clamp(2.5rem, 1.2rem + 1.7vw, 2.8125rem);
+    height: clamp(2.5rem, 1.2rem + 1.7vw, 2.8125rem);
     border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    background-color: rgba(15, 10, 6, 0.7);
-    color: #fff;
+    background-color: #fff;
+    color: var(--color-ink);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
     transition:
       background-color var(--duration-ui) var(--ease-out-soft),
-      border-color var(--duration-ui) var(--ease-out-soft),
       transform var(--duration-ui) var(--ease-out-soft);
   }
 
   .reviews__nav:hover:not(:disabled) {
-    background-color: var(--color-brand);
-    border-color: var(--color-brand);
+    background-color: var(--color-amber-cta);
     transform: scale(1.08);
   }
 
-  .reviews__nav:disabled {
-    opacity: 0.35;
-    cursor: default;
+  /* One dot per genuine review: amber when active, grey otherwise. The button
+     is larger than the dot so it stays easy to tap. */
+  .reviews__dots {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(0.875rem, 0.5rem + 0.5vw, 1.125rem);
   }
 
-  /* Swiper pagination, themed to the brand */
-  .reviews .swiper-pagination-bullet {
-    width: 0.5rem;
-    height: 0.5rem;
-    background-color: rgba(255, 255, 255, 0.35);
-    opacity: 1;
-    transition:
-      width var(--duration-ui) var(--ease-out-soft),
-      background-color var(--duration-ui) var(--ease-out-soft);
+  .reviews__dot {
+    position: relative;
+    width: clamp(1.5rem, 1rem + 0.75vw, 1.9375rem);
+    height: 1.5rem;
+    cursor: pointer;
   }
 
-  .reviews .swiper-pagination-bullet-active {
-    width: 1.5rem;
+  .reviews__dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(0.625rem, 0.4rem + 0.35vw, 0.9375rem);
+    height: clamp(0.625rem, 0.4rem + 0.35vw, 0.9375rem);
     border-radius: 9999px;
-    background-color: var(--color-brand);
+    background-color: rgba(255, 255, 255, 0.55);
+    transform: translate(-50%, -50%);
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      transform var(--duration-ui) var(--ease-out-soft);
   }
 
-  /* Contact strip below the carousel */
+  .reviews__dot:hover::before {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+
+  .reviews__dot[data-active='true']::before {
+    background-color: var(--color-amber-cta);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  /* Contact strip: stacked on phones, one centred row with amber dividers above */
+  /* Shrink-wrapped and centred, so stacked items share one left edge on phones */
   .reviews__contact {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    width: fit-content;
+    margin-inline: auto;
   }
 
-  /* FAQ: light section over the full-bleed crew photograph, which already
-     fades to white on its left so the accordion sits on clean ground. */
+  .reviews__contact-item,
+  .reviews__contact-item > a {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 0.3rem + 1.2vw, 1.5625rem);
+  }
+
+  @media (min-width: 640px) {
+    .reviews__contact {
+      flex-direction: row;
+      justify-content: center;
+      gap: 0;
+    }
+
+    .reviews__contact-item + .reviews__contact-item {
+      margin-left: clamp(0.75rem, 0.2rem + 1.9vw, 2rem);
+      padding-left: clamp(0.75rem, 0.2rem + 1.9vw, 2rem);
+      border-left: 1px solid var(--color-gold);
+    }
+  }
+
+  .reviews__contact-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: clamp(3rem, 0.8rem + 3.9vw, 4.375rem);
+    height: clamp(3rem, 0.8rem + 3.9vw, 4.375rem);
+    border-radius: 9999px;
+    border: 2.5px solid var(--color-amber-cta);
+    color: var(--color-amber-cta);
+    transition:
+      background-color var(--duration-ui) var(--ease-out-soft),
+      color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .reviews__contact-item > a:hover .reviews__contact-icon {
+    background-color: var(--color-amber-cta);
+    color: var(--color-ink);
+  }
+
+  .reviews__contact-label {
+    display: block;
+    font-size: clamp(0.9375rem, 0.5rem + 0.85vw, 1.25rem);
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  .reviews__contact-value {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 0.5rem + 1.2vw, 1.625rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  /* FAQ: flat cool-white section with the crew photograph pinned to the right
+     at full section height, so it is never cropped. The photo's own faded left
+     side is this same white, so it meets the section ground without a seam. */
   .faq {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    background-color: var(--color-surface);
+    background-color: var(--color-paper-cool);
   }
 
-  .faq__backdrop {
+  /* Phones and tablets: the photograph fills the whole section behind the copy,
+     framed on the crew member, under a light wash that keeps the questions
+     readable and thins toward the bottom so the subject still shows. */
+  .faq__photo {
     position: absolute;
     inset: 0;
     z-index: -1;
+  }
+
+  .faq__photo img {
     object-fit: cover;
-    object-position: right center;
+    object-position: 82% center;
+  }
+
+  .faq__photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to bottom,
+      rgba(250, 251, 248, 0.94) 0%,
+      rgba(250, 251, 248, 0.86) 40%,
+      rgba(250, 251, 248, 0.7) 75%,
+      rgba(250, 251, 248, 0.45) 100%
+    );
+  }
+
+  /* Desktop: full section height, anchored right, width from the photo's own
+     aspect ratio — the framing of the design plate. */
+  @media (min-width: 1024px) {
+    .faq__photo {
+      inset: 0 0 0 auto;
+      aspect-ratio: 1448 / 1086;
+    }
+
+    .faq__photo img {
+      object-position: right center;
+    }
+
+    .faq__photo::before {
+      content: none;
+    }
+  }
+
+  .faq__eyebrow {
+    gap: clamp(1rem, 0.4rem + 1.3vw, 1.6rem);
+    font-size: clamp(0.75rem, 0.55rem + 0.55vw, 1.125rem);
+    font-weight: 500;
+    letter-spacing: 0.3em;
+  }
+
+  .faq__eyebrow::before {
+    width: clamp(2.5rem, 1.5rem + 2.25vw, 3.5rem);
+    height: 3px;
+  }
+
+  .faq__lede {
+    font-size: clamp(1.0625rem, 0.4rem + 1.43vw, 1.75rem);
+    line-height: 1.35;
   }
 
   .faq-item {
+    --faq-pad-x: clamp(1rem, 0.3rem + 1.82vw, 2rem);
+    --faq-toggle-size: clamp(1rem, 0.5rem + 0.9vw, 1.3125rem);
     border: 1px solid var(--color-line);
-    border-radius: 0.625rem;
-    background-color: rgba(255, 255, 255, 0.82);
+    border-radius: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.6);
     transition:
       border-color var(--duration-ui) var(--ease-out-soft),
       background-color var(--duration-ui) var(--ease-out-soft),
@@ -1372,17 +2344,24 @@
       transform var(--duration-ui) var(--ease-out-soft);
   }
 
+  /* Over the full photograph on smaller screens the rows need a solid ground */
+  @media (max-width: 1023.98px) {
+    .faq-item {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
   .faq-item:hover {
     border-color: var(--color-brand);
     background-color: #fff;
     transform: translateX(4px);
-    box-shadow: 0 8px 22px rgba(20, 51, 43, 0.1);
+    box-shadow: 0 8px 22px rgba(13, 13, 13, 0.08);
   }
 
   .faq-item[data-open='true'] {
     border-color: var(--color-brand);
     background-color: #fff;
-    box-shadow: 0 10px 28px rgba(20, 51, 43, 0.12);
+    box-shadow: 0 10px 26px rgba(255, 115, 0, 0.1);
   }
 
   .faq-item__question {
@@ -1391,25 +2370,32 @@
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1rem 1.125rem;
+    padding: 0.72rem var(--faq-pad-x);
     text-align: left;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--color-heading);
+    font-family: var(--font-body);
+    font-size: clamp(0.9375rem, 0.5rem + 0.9vw, 1.3125rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--color-ink);
     transition: color var(--duration-ui) var(--ease-out-soft);
   }
 
-  .faq-item:hover .faq-item__question,
-  .faq-item[data-open='true'] .faq-item__question {
+  .faq-item:hover .faq-item__question {
     color: var(--color-brand);
+  }
+
+  /* The open question is set bold and stays black, per the plate */
+  .faq-item[data-open='true'] .faq-item__question {
+    font-weight: 700;
+    color: var(--color-ink);
   }
 
   /* Plus that morphs into a minus: the vertical bar rotates and collapses */
   .faq-toggle {
     position: relative;
     flex-shrink: 0;
-    width: 1.125rem;
-    height: 1.125rem;
+    width: var(--faq-toggle-size);
+    height: var(--faq-toggle-size);
     color: var(--color-brand);
   }
 
@@ -1426,12 +2412,12 @@
 
   .faq-toggle::before {
     width: 100%;
-    height: 2px;
+    height: 2.5px;
     transform: translate(-50%, -50%);
   }
 
   .faq-toggle::after {
-    width: 2px;
+    width: 2.5px;
     height: 100%;
     transform: translate(-50%, -50%);
   }
@@ -1456,8 +2442,13 @@
     overflow: hidden;
   }
 
+  /* Right padding clears the toggle column, so lines break where the plate's do */
   .faq-item__answer {
-    padding: 0 1.125rem 1.125rem;
+    margin-top: -0.375rem;
+    padding: 0 calc(var(--faq-pad-x) + var(--faq-toggle-size) + 1.75rem) 1.1rem var(--faq-pad-x);
+    font-size: clamp(0.9375rem, 0.55rem + 0.73vw, 1.25rem);
+    line-height: 1.42;
+    color: var(--color-ink-soft);
     opacity: 0;
     transform: translateY(-6px);
     transition:
@@ -1643,51 +2634,217 @@
   }
 
   /* Step card layout on top of `.surface-card`: photograph above, copy below */
+  /* Job flow step card: photograph over a flat dark panel with a light hairline.
+     Pairs with .surface-card for the shared radius and hover lift. */
   .job-card {
+    --job-count-size: clamp(2rem, 1.2rem + 1.4vw, 2.625rem);
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border-color: rgba(255, 255, 255, 0.4);
+    background-color: var(--color-card-dark);
   }
 
-  /* Process: light section on the shared parchment backdrop, with four
-     numbered steps. */
-  .process {
-    position: relative;
-    isolation: isolate;
-    background-color: var(--color-parchment);
+  .job-card:hover {
+    border-color: var(--color-brand);
+    background-color: var(--color-ink-soft);
   }
 
-  /* Rounded step photograph */
-  .process-step__photo {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-card);
-    box-shadow: 0 10px 26px rgba(20, 51, 43, 0.16);
+  /* Counter and title on one row; the description sits under the title only */
+  .job-card__body {
+    display: grid;
+    flex: 1;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: start;
+    align-items: center;
+    column-gap: clamp(0.875rem, 0.4rem + 1.4vw, 1.75rem);
+    padding: clamp(0.875rem, 0.6rem + 0.5vw, 1rem) clamp(1rem, 0.45rem + 1.15vw, 1.5rem) 1rem;
+  }
+
+  /* Orange counter with a heavy dark numeral, per the plate */
+  .job-card__count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--job-count-size);
+    height: var(--job-count-size);
+    border-radius: 9999px;
+    background-color: var(--color-brand);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: calc(var(--job-count-size) * 0.56);
+    font-weight: 800;
+    line-height: 1;
     transition:
       transform var(--duration-ui) var(--ease-out-soft),
       box-shadow var(--duration-ui) var(--ease-out-soft);
   }
 
-  .group:hover .process-step__photo {
-    transform: translateY(-6px);
-    box-shadow: 0 22px 44px rgba(20, 51, 43, 0.26);
+  .group:hover .job-card__count {
+    transform: scale(1.1) rotate(-8deg);
+    box-shadow: 0 6px 16px rgba(255, 115, 0, 0.4);
   }
 
-  /* Numbered badge beside each step title */
-  .process-step__number {
-    display: inline-flex;
+  .job-card__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.125rem, 0.7rem + 0.9vw, 1.625rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: #fff;
+    transition: color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .group:hover .job-card__title {
+    color: var(--color-brand);
+  }
+
+  .job-card__desc {
+    grid-column: 2;
+    font-size: clamp(0.9375rem, 0.62rem + 0.63vw, 1.25rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  /* The plate sets a wider gap between the rule and the label here */
+  .job-flow__eyebrow {
+    gap: clamp(1.25rem, 0.3rem + 2.4vw, 2.4rem);
+    font-size: clamp(0.8125rem, 0.6rem + 0.5vw, 1.0625rem);
+  }
+
+  .job-flow__eyebrow::before {
+    width: clamp(2.5rem, 1.5rem + 2.4vw, 3.3rem);
+  }
+
+  /* Process: flat paper section with four numbered steps. The plate's dry-grass
+     texture runs along the bottom edge, behind the call to action. */
+  .process {
+    /* The torn edge at the top is 103% wide so its ends never show a gap;
+       clip it here or it spills past the viewport and the page scrolls sideways. */
+    overflow-x: clip;
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-paper);
+    --step-count-size: clamp(2.75rem, 1.6rem + 2.1vw, 3.625rem);
+  }
+
+  /* Grass texture strip. Its top rows are already faded to --color-paper. */
+  .process__texture {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 100%;
+    height: auto;
+    min-height: 9rem;
+    pointer-events: none;
+  }
+
+  /* Lift wrapper. The shadow lives here because the mask below would clip it. */
+  .process-step__frame {
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      filter var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .group:hover .process-step__frame {
+    transform: translateY(-6px);
+    filter: drop-shadow(0 18px 20px rgba(13, 13, 13, 0.2));
+  }
+
+  /* Step photograph with the plate's rough, dry-brush edge */
+  .process-step__photo {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 13 / 15;
+    -webkit-mask: url("/assets/photo-rough-edge-mask.webp") center / 100% 100% no-repeat;
+    mask: url("/assets/photo-rough-edge-mask.webp") center / 100% 100% no-repeat;
+  }
+
+  .process-step__photo img {
+    transition: transform 700ms var(--ease-out-soft);
+  }
+
+  .group:hover .process-step__photo img {
+    transform: scale(1.06);
+  }
+
+  /* Large step counter beside the title */
+  .process-step__count {
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: var(--step-count-size);
+    height: var(--step-count-size);
     border-radius: 9999px;
-    background-color: var(--color-brand);
+    background-color: var(--color-ember);
     color: #fff;
     font-family: var(--font-display);
-    font-size: 0.875rem;
+    font-size: calc(var(--step-count-size) * 0.54);
     font-weight: 700;
+    line-height: 1;
+    transition:
+      transform var(--duration-ui) var(--ease-out-soft),
+      box-shadow var(--duration-ui) var(--ease-out-soft);
   }
+
+  .group:hover .process-step__count {
+    transform: scale(1.08) rotate(-8deg);
+    box-shadow: 0 8px 18px rgba(249, 96, 9, 0.35);
+  }
+
+  /* Title box is at least as tall as the counter, so one-line titles centre on it */
+  .process-step__title {
+    display: flex;
+    align-items: center;
+    min-height: var(--step-count-size);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 0.95rem + 0.72vw, 1.75rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+    transition: color var(--duration-ui) var(--ease-out-soft);
+  }
+
+  .group:hover .process-step__title {
+    color: var(--color-ember);
+  }
+
+  .process-step__desc {
+    margin-top: 0.3rem;
+    font-size: clamp(0.9375rem, 0.7rem + 0.31vw, 1.125rem);
+    line-height: 1.42;
+    color: var(--color-ink-soft);
+  }
+
+  /* In four columns, let the copy run a few pixels into the gutter so each
+     title and description keeps the design's line breaks */
+  @media (min-width: 1024px) {
+    .process-step__title,
+    .process-step__desc {
+      margin-right: -0.75rem;
+    }
+  }
+
+  /* Tapered orange brush rule under the CTA */
+  .process__brush {
+    width: clamp(12rem, 6rem + 14vw, 19.5rem);
+    height: auto;
+  }
+
+  .process__tagline {
+    font-family: var(--font-display);
+    font-size: clamp(0.75rem, 0.62rem + 0.33vw, 0.9375rem);
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
 
   /* Leaning tree: dark section with a full-bleed photograph, copy on the left
      and an angled crew photo on the right, closing with the shared torn edge. */
@@ -1708,10 +2865,53 @@
     pointer-events: none;
   }
 
+  /* Soft dark ellipse behind the copy column, plus a light shadow falling from
+     the top-left corner, so the text reads over the photograph. */
+  .leaning-tree__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      /* Near-solid dark along the left edge, as the design has it */
+      linear-gradient(
+        90deg,
+        rgba(15, 10, 6, 0.86) 0%,
+        rgba(15, 10, 6, 0.6) 34%,
+        rgba(15, 10, 6, 0) 62%
+      ),
+      /* Shadow falling from the top-left corner */
+      linear-gradient(135deg, rgba(15, 10, 6, 0.55) 0%, rgba(15, 10, 6, 0) 45%),
+      /* Dark ellipse behind the copy column */
+      radial-gradient(
+        ellipse 60% 72% at 22% 48%,
+        rgba(15, 10, 6, 0.96) 0%,
+        rgba(15, 10, 6, 0.88) 42%,
+        rgba(15, 10, 6, 0.5) 72%,
+        rgba(15, 10, 6, 0) 100%
+      );
+  }
+
   /* Numbered-feel step, marked by a rule in the brand colour */
   .step-item {
     border-left: 3px solid var(--color-brand);
     padding-left: 1.125rem;
+  }
+
+  /* Sizes scaled from the design plate; descriptions wrap to two lines */
+  .step-item__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.125rem, 0.75rem + 0.9vw, 1.5rem);
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .step-item__desc {
+    margin-top: 0.4rem;
+    max-width: 26ch;
+    font-size: clamp(0.95rem, 0.7rem + 0.55vw, 1.2rem);
+    line-height: 1.4;
+    color: var(--color-on-dark);
   }
 
   /* Service area: full-bleed illustrated map plate. The artwork already
@@ -1721,21 +2921,42 @@
     position: relative;
     display: flex;
     align-items: flex-start;
-    overflow: hidden;
-    min-height: clamp(30rem, 58vw, 50rem);
+    /* clip, not hidden: hidden makes this a scroll container, which drops the
+       automatic minimum height and lets the copy spill out of the aspect-ratio
+       box on narrow screens. clip still hides overflow without that side effect. */
+    overflow: clip;
+    /* The plate's full width at its natural scale, but only its top 87% (1448 x
+       945 of 1086): everything from the map down to the rocks and dock, without
+       the empty band of reflected water below them. The image is anchored to the
+       top, so nothing is cropped at the sides on desktop.
+       aspect-ratio only sets the preferred height: with no explicit min-height the
+       section still grows to fit the copy on narrow screens, and the plate then
+       crops evenly at the sides. */
+    aspect-ratio: 1448 / 945;
     background-color: var(--color-parchment);
   }
 
   .service-area__scrim {
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      125% 105% at 0% 0%,
-      rgba(253, 251, 247, 0.97) 0%,
-      rgba(253, 251, 247, 0.86) 28%,
-      rgba(253, 251, 247, 0.38) 50%,
-      rgba(253, 251, 247, 0) 72%
-    );
+    background:
+      /* Cream ellipse behind the copy column, so the paragraph stays legible
+         wherever the trees in the plate fall behind it */
+      radial-gradient(
+        ellipse 46% 52% at 28% 46%,
+        rgba(253, 251, 247, 0.95) 0%,
+        rgba(253, 251, 247, 0.9) 55%,
+        rgba(253, 251, 247, 0.45) 80%,
+        rgba(253, 251, 247, 0) 100%
+      ),
+      /* Wash anchored to the top-left corner, behind the label and headline */
+      radial-gradient(
+        125% 105% at 0% 0%,
+        rgba(253, 251, 247, 0.97) 0%,
+        rgba(253, 251, 247, 0.86) 28%,
+        rgba(253, 251, 247, 0.38) 50%,
+        rgba(253, 251, 247, 0) 72%
+      );
   }
 
   /* Storm response: dark section built on the shared photo panel, with a
@@ -1746,10 +2967,120 @@
     background-color: var(--color-ink-deep);
   }
 
+  /* Settles the photograph onto solid colour at the base, so the torn edge cut
+     into the service area section below meets flat colour, not the photo. */
+  .storm-response::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: clamp(4rem, 9vw, 8rem);
+    background: linear-gradient(to bottom, rgba(15, 10, 6, 0) 0%, var(--color-ink-deep) 82%);
+    pointer-events: none;
+  }
+
+  /* The photograph covers the entire section — copy panel and gallery alike. */
+  .storm-response__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Two soft dark ellipses in place of an edge fade: a larger one behind the
+     copy on the left, and a smaller, flatter one behind the gallery cards. The
+     photograph stays visible around both, as in the design. */
+  .storm-response__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      /* Shadow falling from the top-left corner, over the copy */
+      linear-gradient(135deg, rgba(15, 10, 6, 0.6) 0%, rgba(15, 10, 6, 0) 48%),
+      /* Shadow rising from the bottom edge, behind the gallery */
+      linear-gradient(
+        to bottom,
+        rgba(15, 10, 6, 0) 55%,
+        rgba(15, 10, 6, 0.62) 80%,
+        rgba(15, 10, 6, 0.9) 100%
+      ),
+      radial-gradient(
+        ellipse 60% 56% at 16% 28%,
+        rgba(15, 10, 6, 0.92) 0%,
+        rgba(15, 10, 6, 0.74) 38%,
+        rgba(15, 10, 6, 0.3) 68%,
+        rgba(15, 10, 6, 0) 100%
+      ),
+      radial-gradient(
+        ellipse 58% 30% at 50% 84%,
+        rgba(15, 10, 6, 0.8) 0%,
+        rgba(15, 10, 6, 0.5) 45%,
+        rgba(15, 10, 6, 0) 100%
+      );
+  }
+
+  /* Section eyebrow runs larger here than the site default, per the design */
+  /* The service area rises into the dark section above along a torn edge. Its
+     own top strip is masked with the shared torn-edge shape (ragged along the
+     top) and the section is pulled up to overlap, so the map and parchment form
+     the edge themselves, with no flat colour laid over the map. Kept shallow:
+     a slight edge, not a deep bite. The solid layer starts 2px higher to cover
+     the half-transparent bottom row of the torn-edge asset. */
+  .storm-response + .service-area {
+    --tear-depth: clamp(0.875rem, 1.8vw, 1.625rem);
+    margin-top: calc(-1 * var(--tear-depth));
+    -webkit-mask:
+      url("/assets/hero-torn-edge.webp") top center / 100% var(--tear-depth) no-repeat,
+      linear-gradient(#000, #000) 0 calc(var(--tear-depth) - 2px) / 100%
+        calc(100% - var(--tear-depth) + 2px) no-repeat;
+    mask:
+      url("/assets/hero-torn-edge.webp") top center / 100% var(--tear-depth) no-repeat,
+      linear-gradient(#000, #000) 0 calc(var(--tear-depth) - 2px) / 100%
+        calc(100% - var(--tear-depth) + 2px) no-repeat;
+  }
+
+  .leaning-tree .eyebrow,
+  .service-area .eyebrow,
+  .storm-response .eyebrow {
+    font-size: clamp(0.875rem, 0.6rem + 0.55vw, 1.0625rem);
+  }
+
+  /* Priority row: icon centred over its label */
+  .storm-priority {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .storm-priority__icon {
+    width: clamp(2.25rem, 1.5rem + 1.7vw, 3.25rem);
+    height: clamp(2.25rem, 1.5rem + 1.7vw, 3.25rem);
+    color: var(--color-brand);
+  }
+
+  .storm-priority__label {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(0.9rem, 0.7rem + 0.5vw, 1.125rem);
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  /* Gallery card, per the design: thin light border, slightly rounded corners */
   .storm-gallery__figure {
     overflow: hidden;
-    border-radius: var(--radius-card);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(236, 234, 229, 0.85);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+  }
+
+  .storm-gallery__caption {
+    margin-top: 0.875rem;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1rem, 0.75rem + 0.6vw, 1.375rem);
+    line-height: 1.3;
+    color: #fff;
   }
 
   /* Machinery: light section over the pale illustrated backdrop, with a grid of
@@ -1757,16 +3088,20 @@
   .machinery {
     position: relative;
     isolation: isolate;
+    /* The torn edge at the top is 103% wide; clip it or the page scrolls sideways */
+    overflow-x: clip;
     background-color: var(--color-parchment);
   }
 
-  /* Equipment card: photograph above, copy on a white panel below */
+  /* Equipment card: wide photograph above, copy on a white panel below.
+     Proportions follow the design (1.86:1 photo, compact body) so the full
+     grid of six fits on one screen. */
   .machinery-card {
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
-    border-radius: var(--radius-card);
+    border-radius: 0.5rem;
     border: 1px solid var(--color-line);
     background-color: var(--color-surface);
     box-shadow: 0 6px 18px rgba(20, 51, 43, 0.07);
@@ -1778,6 +3113,27 @@
   .machinery-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 20px 40px rgba(20, 51, 43, 0.18);
+  }
+
+  .machinery-card__body {
+    padding: clamp(0.875rem, 1.2vw, 1.125rem) clamp(1rem, 1.4vw, 1.375rem)
+      clamp(1rem, 1.4vw, 1.375rem);
+  }
+
+  /* Sizes scaled from the design plate to the site container */
+  .machinery-card__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.125rem, 0.75rem + 0.9vw, 1.5rem);
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  .machinery-card__desc {
+    margin-top: 0.4rem;
+    font-size: clamp(0.9rem, 0.65rem + 0.6vw, 1.15rem);
+    line-height: 1.4;
+    color: #55534f;
   }
 
   /* Properties served: light section over a pale illustrated backdrop
@@ -1803,6 +3159,71 @@
      lower edge — used where the top of the image matters too. */
   .section-backdrop--center {
     object-position: center;
+  }
+
+  /* Property card, per the design: photograph on the left, then the icon beside
+     the title and description. Stacks below sm so nothing gets cramped.
+     Sizes are the design plate measurements scaled to the site container. */
+  .property-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .property-card {
+      flex-direction: row;
+      align-items: center;
+      gap: clamp(1rem, 1.8vw, 1.625rem);
+    }
+  }
+
+  /* Flat photograph with slightly softened corners — no shadow, as designed */
+  .property-card__photo {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    aspect-ratio: 1.62;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .property-card__photo {
+      width: 53%;
+    }
+  }
+
+  .property-card__body {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 1.2vw, 1.125rem);
+    min-width: 0;
+  }
+
+  .property-card__icon {
+    flex-shrink: 0;
+    width: clamp(2.25rem, 1.4rem + 1.9vw, 3.25rem);
+    height: clamp(2.25rem, 1.4rem + 1.9vw, 3.25rem);
+    color: var(--color-brand);
+  }
+
+  .property-card__title {
+    /* Nudged down so the capitals line up with the top of the icon */
+    margin-top: 0.15em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.2rem, 0.8rem + 1vw, 1.625rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+
+  .property-card__desc {
+    margin-top: 0.55rem;
+    font-size: clamp(0.95rem, 0.65rem + 0.8vw, 1.3rem);
+    line-height: 1.42;
+    color: #55534f;
   }
 
   /* Rounded, softly shadowed photograph frame. Shared by any card whose
@@ -1847,6 +3268,13 @@
     /* Prevents descenders (g, y) being clipped by the mask */
     padding-bottom: 0.12em;
     margin-bottom: -0.12em;
+  }
+
+  /* Headlines set tighter than line-height ~1: the descender falls further
+     below the line box, so the mask needs a deeper allowance. Safe to 0.8. */
+  .text-reveal--tight .text-reveal__word {
+    padding-bottom: 0.26em;
+    margin-bottom: -0.26em;
   }
 
   /* Whole-phrase mask. inline-block (not flex) so the phrase can still wrap;
@@ -1992,6 +3420,11 @@
     transform: none;
   }
 
+  .reviews__dot::before,
+  .reviews__contact-icon {
+    transition: none;
+  }
+
   /* FAQ accordion: open and close instantly, no hover shift.
      The toggle keeps its transforms — they position and morph the icon
      rather than animate it. */
@@ -2012,15 +3445,20 @@
   /* Dark card hover lift and job-card photo zoom */
   .surface-card,
   .surface-card:hover,
-  .job-card img {
+  .job-card img,
+  .job-card__count,
+  .group:hover .job-card__count {
     transition: none;
     transform: none;
   }
 
   /* Process step hover lift */
-  .process-step__photo,
-  .group:hover .process-step__photo,
-  .process-step__photo img {
+  .process-step__frame,
+  .group:hover .process-step__frame,
+  .process-step__photo img,
+  .group:hover .process-step__photo img,
+  .process-step__count,
+  .group:hover .process-step__count {
     transition: none;
     transform: none;
   }

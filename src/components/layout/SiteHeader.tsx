@@ -25,6 +25,7 @@ import {
   CloseIcon,
   MenuIcon,
   PhoneIcon,
+  PhoneSolidIcon,
 } from "@/components/ui/Icons";
 
 export function SiteHeader() {
@@ -106,18 +107,21 @@ export function SiteHeader() {
       data-scrolled={isScrolled}
     >
       <div className="container-site">
+        {/* Items align to the top: over the hero the large logo hangs below the nav
+            line, as in the design. CSS offsets the nav and actions onto that line
+            and re-centres them on the small logo once scrolled. */}
         <div
-          className={`flex items-center justify-between gap-6 transition-all duration-200 ${
-            isScrolled ? "py-2" : "py-3 md:py-4"
+          className={`flex items-start justify-between gap-6 transition-[padding] duration-300 ${
+            isScrolled ? "py-2" : "pt-3 pb-2 md:pt-5"
           }`}
         >
-          <Logo />
+          <Logo priority imageClassName="site-header__logo" />
 
           {/* ---------- Desktop navigation ---------- */}
           <nav
             ref={desktopNavRef}
             aria-label="Main"
-            className="hidden items-center gap-8 xl:flex"
+            className="site-header__nav hidden items-center gap-8 xl:flex"
           >
             {navigation.map((item) => {
               const isActive = isActiveRoute(item.href);
@@ -196,17 +200,17 @@ export function SiteHeader() {
           </nav>
 
           {/* ---------- Phone call-to-action + mobile trigger ---------- */}
-          <div className="flex items-center gap-3">
+          <div className="site-header__actions flex items-center gap-3">
             <a
               href={siteConfig.phone.href}
               className="
-                hidden items-center gap-2.5 rounded-pill border-2 border-brand bg-ink/80
-                py-1.5 pr-5 pl-1.5 font-display text-lg font-extrabold text-white backdrop-blur-sm
-                transition-colors duration-200 hover:bg-brand md:inline-flex
+                hidden items-center gap-2.5 rounded-pill border-2 border-amber-cta bg-ink/70
+                py-1 pr-6 pl-1 font-display text-[1.375rem] font-extrabold text-white backdrop-blur-sm
+                transition-colors duration-200 hover:bg-ember md:inline-flex
               "
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-brand text-white">
-                <PhoneIcon className="size-6" />
+              <span className="flex size-11 items-center justify-center rounded-full bg-ember text-white">
+                <PhoneSolidIcon className="size-6" />
               </span>
               {siteConfig.phone.display}
             </a>

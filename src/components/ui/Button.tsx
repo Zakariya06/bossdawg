@@ -10,7 +10,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type ButtonVariant = "primary" | "dark" | "outline" | "outline-dark";
+type ButtonVariant = "primary" | "amber" | "dark" | "outline" | "outline-dark";
 
 type ButtonProps = {
   children: ReactNode;
@@ -21,6 +21,7 @@ type ButtonProps = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "button--primary",
+  amber: "button--amber",
   dark: "button--dark",
   outline: "button--outline",
   "outline-dark": "button--outline-dark",

@@ -1,19 +1,20 @@
 /**
  * PROCESS SECTION
- * Purpose: Walks through the job from arrival to cleanup, as four numbered
- * steps with a photograph each.
+ * Purpose: Walks through a job in four numbered steps, each a rough-edged
+ * photograph with a large counter, then closes on a single amber call to action.
  *
- * Light section on the shared parchment backdrop, mirroring .machinery, with
- * the heading and calls to action centred as in the reference.
+ * The flat paper colour and the dry-grass texture along the bottom are taken
+ * from the design plate (see `.process` and `.process__texture` in globals.css).
  */
 
 import Image from "next/image";
 
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { BrushStroke } from "@/components/ui/BrushStroke";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
-import { ArrowRightIcon } from "@/components/ui/Icons";
+import { ChevronRightIcon } from "@/components/ui/Icons";
 
 const steps = [
   {
@@ -35,7 +36,8 @@ const steps = [
     alt: "Crew member feeding leafy branches into a red chipper beside the truck",
   },
   {
-    title: "You're Left with a Clean, Safe Space",
+    // Non-breaking space keeps "a Clean" together, so the title breaks after "with" as in the design
+    title: "You're Left with a Clean, Safe Space",
     description: "No mess, no stress — just a safer, cleaner property.",
     image: "/assets/process-clean-safe-space.webp",
     alt: "Neatly stacked log rounds on a tidy front lawn after a completed removal",
@@ -44,67 +46,68 @@ const steps = [
 
 export function ProcessSection() {
   return (
-    <section className="process section">
+    <section className="process">
       {/* Torn edge cut into this section from the dark one above */}
       <div className="torn-edge-top" aria-hidden="true" />
       <Image
-        src="/assets/machinery-backdrop.webp"
+        src="/assets/process-grass-texture.webp"
         alt=""
-        fill
+        width={2048}
+        height={312}
         sizes="100vw"
-        className="section-backdrop"
+        className="process__texture object-cover object-bottom"
       />
 
-      <Container>
+      <Container className="relative pt-16 pb-14 md:pt-20 md:pb-16">
         {/* ---------- Heading ---------- */}
-        <div className="flex flex-col items-center text-center">
-          <Reveal delay={80}>
-            <p className="eyebrow text-heading">Our Process</p>
-          </Reveal>
+        <Reveal delay={80} className="text-center">
+          <p className="eyebrow eyebrow--lg eyebrow--centered text-ink-soft">Our Process</p>
+        </Reveal>
 
-          <TextReveal
-            as="h2"
-            delay={180}
-            className="heading-display mt-5 text-h2"
-            segments={[
-              { text: "What the job" },
-              { text: "actually looks like.", className: "text-brand" },
-            ]}
-          />
+        <TextReveal
+          as="h2"
+          delay={180}
+          className="heading-display mt-4 text-center text-display-wide text-ink md:mt-5"
+          segments={[
+            { text: "What the job" },
+            { text: "actually looks like.", className: "text-ember" },
+          ]}
+        />
 
-          <Reveal delay={560}>
-            <p className="mt-5 max-w-2xl text-lead text-body">
-              From the first cut to the final cleanup, we handle the heavy work so you don&apos;t
-              have to. Here&apos;s a look at how we take your tree removal from start to finish.
-            </p>
-          </Reveal>
-        </div>
+        {/* Measure is set in em so the first line ends at "have to." as in the design */}
+        <Reveal delay={560}>
+          <p className="mx-auto mt-4 max-w-[41.5em] text-center text-lead-lg text-pretty text-ink-soft">
+            From the first cut to the final cleanup, we handle the heavy work so you don&apos;t
+            have to. Here&apos;s a look at how we take your tree removal from start to finish.
+          </p>
+        </Reveal>
 
         {/* ---------- Steps ---------- */}
-        <ol className="mt-12 grid gap-7 sm:grid-cols-2 md:mt-14 lg:grid-cols-4">
+        <ol className="mt-9 grid gap-x-5 gap-y-10 sm:grid-cols-2 md:mt-10 lg:mt-5 lg:grid-cols-4">
           {steps.map((step, index) => (
             <li key={step.title}>
               <Reveal delay={index * 100} className="group">
-                <div className="process-step__photo aspect-[4/5]">
-                  <Image
-                    src={step.image}
-                    alt={step.alt}
-                    fill
-                    sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, 90vw"
-                    className="object-cover"
-                  />
+                <div className="process-step__frame">
+                  <div className="process-step__photo">
+                    <Image
+                      src={step.image}
+                      alt={step.alt}
+                      fill
+                      sizes="(min-width: 1024px) 24vw, (min-width: 640px) 46vw, 92vw"
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
 
-                <div className="mt-5 flex items-center gap-3">
-                  <span className="process-step__number">{index + 1}</span>
-                  <h3 className="font-display text-base leading-tight font-extrabold text-heading transition-colors duration-200 group-hover:text-brand md:text-lg">
-                    {step.title}
-                  </h3>
+                <div className="mt-3 flex items-start gap-4 pl-1.5 xl:gap-5">
+                  <span className="process-step__count" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="process-step__title">{step.title}</h3>
+                    <p className="process-step__desc">{step.description}</p>
+                  </div>
                 </div>
-
-                <p className="mt-2.5 text-sm leading-snug text-body-muted md:text-base">
-                  {step.description}
-                </p>
               </Reveal>
             </li>
           ))}
@@ -112,18 +115,18 @@ export function ProcessSection() {
 
         {/* ---------- Call to action ---------- */}
         <Reveal delay={200}>
-          <div className="mt-12 flex justify-center">
-            <Button href="/contact" variant="primary" className="button--lg group">
+          <div className="mt-8 flex flex-col items-center md:mt-6">
+            <Button
+              href="/contact"
+              variant="amber"
+              className="button--amber-solid button--xl group"
+            >
               Get a Free Quote
-              <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
+              <ChevronRightIcon className="size-[1.25em] transition-transform duration-200 group-hover:translate-x-1" />
             </Button>
+            <BrushStroke className="process__brush mt-1.5 text-ember" />
+            <p className="process__tagline mt-4">Trees removed. Properties improved.</p>
           </div>
-        </Reveal>
-
-        <Reveal delay={320}>
-          <p className="mt-9 text-center font-display text-xs font-semibold tracking-[0.22em] text-body-muted uppercase">
-            Trees removed. Properties improved.
-          </p>
         </Reveal>
       </Container>
     </section>

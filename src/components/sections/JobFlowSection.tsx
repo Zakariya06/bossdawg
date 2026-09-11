@@ -57,7 +57,7 @@ const jobSteps = [
 
 export function JobFlowSection() {
   return (
-    <section className="job-flow section">
+    <section className="job-flow">
       <Image
         src="/assets/job-flow-backdrop.webp"
         alt=""
@@ -66,55 +66,54 @@ export function JobFlowSection() {
         className="job-flow__backdrop"
       />
 
-      <Container>
+      <Container className="pt-14 pb-12 md:pt-8 md:pb-9">
         {/* ---------- Heading ---------- */}
-        <Reveal delay={80}>
-          <p className="eyebrow text-white">Our Process</p>
-        </Reveal>
+        {/* The plate indents the heading block slightly from the card edges */}
+        <div className="lg:px-5">
+          <Reveal delay={80}>
+            <p className="eyebrow eyebrow--lg job-flow__eyebrow text-white/85">Our Process</p>
+          </Reveal>
 
-        <TextReveal
-          as="h2"
-          delay={180}
-          className="heading-display mt-4 text-h2 text-white"
-          segments={[
-            { text: "From First Call to a" },
-            { text: "Cleared Site", className: "text-brand" },
-          ]}
-        />
+          <TextReveal
+            as="h2"
+            delay={180}
+            className="heading-display mt-3 text-display-full text-white md:mt-1"
+            segments={[
+              { text: "From First Call to a" },
+              { text: "Cleared Site", className: "text-brand" },
+            ]}
+          />
 
-        <Reveal delay={620}>
-          <p className="mt-4 max-w-2xl text-lead text-on-dark">
-            A clear plan. The right equipment. A yard that&apos;s left tidy. Here&apos;s how a job
-            runs.
-          </p>
-        </Reveal>
+          <Reveal delay={620}>
+            <p className="mt-3 text-lead-2xl text-white/90 md:mt-1.5">
+              A clear plan. The right equipment. A yard that&apos;s left tidy. Here&apos;s how a
+              job runs.
+            </p>
+          </Reveal>
+        </div>
 
         {/* ---------- Steps ---------- */}
-        <ol className="mt-11 grid gap-6 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
+        <ol className="mt-9 grid gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
           {jobSteps.map((step, index) => (
             <li key={step.title}>
               <Reveal delay={(index % 3) * 100} className="group h-full">
                 <article className="surface-card job-card">
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                  <div className="relative aspect-[7/4] overflow-hidden">
                     <Image
                       src={step.image}
                       alt={step.alt}
                       fill
-                      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                      sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
                       className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
                     />
                   </div>
 
-                  <div className="px-5 py-5">
-                    <div className="flex items-center gap-3">
-                      <span className="process-step__number">{index + 1}</span>
-                      <h3 className="font-display text-base leading-tight font-extrabold text-white md:text-lg">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="mt-2.5 text-sm leading-snug text-on-dark-muted">
-                      {step.description}
-                    </p>
+                  <div className="job-card__body">
+                    <span className="job-card__count" aria-hidden="true">
+                      {index + 1}
+                    </span>
+                    <h3 className="job-card__title">{step.title}</h3>
+                    <p className="job-card__desc">{step.description}</p>
                   </div>
                 </article>
               </Reveal>

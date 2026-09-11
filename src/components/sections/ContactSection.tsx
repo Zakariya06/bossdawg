@@ -5,6 +5,10 @@
  * Purpose: Final conversion point — contact details beside a quote request
  * form, over the sunset plate.
  *
+ * The plate is framed as the design has it: full width, pinned to the top,
+ * nothing layered over it. See `.contact` in globals.css for how the section
+ * height is tied to the plate so its dark treeline meets the footer.
+ *
  * ⚠ THE FORM IS NOT CONNECTED TO ANYTHING YET.
  *
  * There is no backend, no email service and no API route behind it, so a
@@ -24,17 +28,22 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { siteConfig } from "@/lib/site-config";
-import { ArrowRightIcon, DocumentIcon, MapPinIcon, PhoneIcon } from "@/components/ui/Icons";
+import {
+  ArrowRightIcon,
+  DocumentIcon,
+  MapPinSolidIcon,
+  PhoneSolidIcon,
+} from "@/components/ui/Icons";
 
 const contactPoints = [
   {
-    icon: PhoneIcon,
+    icon: PhoneSolidIcon,
     title: siteConfig.phone.display,
     detail: `${siteConfig.hours.time}, ${siteConfig.hours.days.replace(",", "")}`,
     href: siteConfig.phone.href,
   },
   {
-    icon: MapPinIcon,
+    icon: MapPinSolidIcon,
     title: siteConfig.address.street,
     detail: siteConfig.address.cityPostal,
   },
@@ -55,57 +64,58 @@ export function ContactSection() {
   }
 
   return (
-    <section className="contact section" id="contact">
+    <section className="contact" id="contact">
       {/* Torn edge cut into this section from the dark one above */}
       <div className="torn-edge-top" aria-hidden="true" />
       <Image
         src="/assets/contact-sunset-plate.webp"
         alt=""
-        fill
-        sizes="100vw"
+        width={1387}
+        height={1134}
+        sizes="101vw"
         className="contact__backdrop"
       />
-      <div className="contact__fade" aria-hidden="true" />
 
-      <Container className="relative z-10">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      {/* Desktop padding: top clears the torn edge; bottom is the height of the
+          plate's dark band inside the section (its visual top sits at ~62.9vw) */}
+      <Container className="relative z-10 pt-16 pb-20 lg:pt-[clamp(1.75rem,4vw,4.5rem)] lg:pb-[calc(0.6vw+2.5rem)]">
+        {/* The card takes the plate's share of the width; the copy the rest */}
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,51.3%)]">
           {/* ---------- Copy and contact details ---------- */}
-          <div>
+          <div className="lg:pt-3 xl:pl-8">
             <Reveal delay={80}>
-              <p className="eyebrow text-heading">Get in Touch</p>
+              <p className="eyebrow contact__eyebrow text-ink">Get in Touch</p>
             </Reveal>
 
             <TextReveal
               as="h2"
               delay={180}
-              className="heading-display mt-4 text-h2"
+              className="text-reveal--tight heading-display contact__heading mt-6 md:mt-7"
               segments={[
-                { text: "Let's talk about" },
-                { text: "your trees.", className: "text-brand", newLine: true },
+                { text: "Let’s talk about" },
+                { text: "your trees.", className: "text-ember", newLine: true },
               ]}
             />
 
             <Reveal delay={560}>
-              <p className="mt-5 max-w-md text-lead text-body">
+              <p className="contact__lede mt-6 max-w-[35rem] text-ink">
                 Have a question or ready for a free quote? Fill out the form and we&apos;ll get back
                 to you as soon as possible.
               </p>
             </Reveal>
 
-            <ul className="mt-9 flex flex-col gap-6">
+            <ul className="contact__points mt-5">
               {contactPoints.map((point, index) => {
                 const PointIcon = point.icon;
 
                 const inner = (
                   <>
                     <span className="contact-point__icon">
-                      <PointIcon className="size-6" />
+                      <PointIcon className="size-1/2" />
                     </span>
-                    <span className="leading-tight">
-                      <span className="block font-display text-lg font-extrabold text-heading">
-                        {point.title}
-                      </span>
-                      <span className="block text-sm text-body">{point.detail}</span>
+                    <span>
+                      <span className="contact-point__title">{point.title}</span>
+                      <span className="contact-point__detail">{point.detail}</span>
                     </span>
                   </>
                 );
@@ -114,14 +124,11 @@ export function ContactSection() {
                   <li key={point.title}>
                     <Reveal delay={700 + index * 100}>
                       {point.href ? (
-                        <a
-                          href={point.href}
-                          className="flex items-center gap-4 transition-opacity hover:opacity-75"
-                        >
+                        <a href={point.href} className="contact-point">
                           {inner}
                         </a>
                       ) : (
-                        <span className="flex items-center gap-4">{inner}</span>
+                        <span className="contact-point">{inner}</span>
                       )}
                     </Reveal>
                   </li>
@@ -132,16 +139,16 @@ export function ContactSection() {
 
           {/* ---------- Quote form ---------- */}
           <Reveal delay={320}>
-            <div className="quote-card p-6 md:p-8">
-              <h3 className="heading-display text-h3">
-                Request a <span className="text-brand">Free Quote</span>
+            <div className="quote-card">
+              <h3 className="heading-display quote-card__title">
+                Request a <span className="text-ember">Free Quote</span>
               </h3>
-              <p className="mt-2 text-sm text-body-muted">
+              <p className="quote-card__subtitle mt-2">
                 Tell us about your tree project and we&apos;ll be in touch shortly.
               </p>
 
-              <form className="mt-6 flex flex-col gap-3.5" onSubmit={handleSubmit} noValidate={false}>
-                <div className="grid gap-3.5 sm:grid-cols-2">
+              <form className="quote-card__form mt-6" onSubmit={handleSubmit}>
+                <div className="quote-card__row">
                   <div>
                     <label htmlFor="quote-name" className="sr-only">
                       Your name
@@ -212,32 +219,30 @@ export function ContactSection() {
                     name="details"
                     rows={4}
                     placeholder="Short Description of the Job"
-                    className="form-field resize-y"
+                    className="form-field form-field--textarea block resize-y"
                   />
                 </div>
 
-                <button type="submit" className="button button--primary group mt-1 w-full">
+                <button type="submit" className="button quote-card__submit group">
                   Get My Free Quote
-                  <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRightIcon className="size-[1em] transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
 
                 {isBlocked && (
                   <p
                     role="alert"
-                    className="rounded-lg border border-brand/40 bg-brand/10 px-4 py-3 text-sm text-heading"
+                    className="rounded-lg border border-ember/40 bg-ember/10 px-4 py-3 text-sm text-ink"
                   >
                     This form isn&apos;t connected yet, so your message wasn&apos;t sent. Please
                     call{" "}
-                    <a href={siteConfig.phone.href} className="font-bold text-brand underline">
+                    <a href={siteConfig.phone.href} className="font-bold text-ember underline">
                       {siteConfig.phone.display}
                     </a>{" "}
                     and we&apos;ll get straight back to you.
                   </p>
                 )}
 
-                <p className="text-center text-xs text-body-muted">
-                  Free estimates. No obligation.
-                </p>
+                <p className="quote-card__note">Free estimates. No obligation.</p>
               </form>
             </div>
           </Reveal>

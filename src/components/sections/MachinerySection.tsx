@@ -13,7 +13,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
-import { ArrowRightIcon, TreeIcon } from "@/components/ui/Icons";
+import { ArrowRightIcon, TwinFirIcon } from "@/components/ui/Icons";
 
 const equipment = [
   {
@@ -57,6 +57,8 @@ const equipment = [
 export function MachinerySection() {
   return (
     <section className="machinery section">
+      {/* Torn edge cut into this section from the dark one above */}
+      <div className="torn-edge-top" aria-hidden="true" />
       <Image
         src="/assets/machinery-backdrop.webp"
         alt=""
@@ -69,13 +71,13 @@ export function MachinerySection() {
         {/* ---------- Heading ---------- */}
         <div className="flex flex-col items-center text-center">
           <Reveal delay={80}>
-            <p className="eyebrow text-heading">The Right Equipment. The Right People.</p>
+            <p className="eyebrow text-ink">The Right Equipment. The Right People.</p>
           </Reveal>
 
           <TextReveal
             as="h2"
             delay={180}
-            className="heading-display mt-5 text-h2"
+            className="heading-display mt-5 text-display text-ink"
             segments={[
               { text: "Real Machinery." },
               { text: "Real Results.", className: "text-brand", newLine: true },
@@ -84,12 +86,12 @@ export function MachinerySection() {
         </div>
 
         {/* ---------- Equipment grid ---------- */}
-        <ul className="mt-12 grid gap-6 sm:grid-cols-2 md:mt-14 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
           {equipment.map((item, index) => (
             <li key={item.title}>
               <Reveal delay={(index % 3) * 100} className="group h-full">
                 <article className="machinery-card">
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[1.86] overflow-hidden">
                     <Image
                       src={item.image}
                       alt={item.alt}
@@ -99,11 +101,11 @@ export function MachinerySection() {
                     />
                   </div>
 
-                  <div className="px-5 py-5">
-                    <h3 className="font-display text-lg font-extrabold text-heading transition-colors duration-200 group-hover:text-brand md:text-xl">
+                  <div className="machinery-card__body">
+                    <h3 className="machinery-card__title transition-colors duration-200 group-hover:text-brand">
                       {item.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-snug text-body-muted md:text-base">
+                    <p className="machinery-card__desc">
                       {item.description}
                     </p>
                   </div>
@@ -116,12 +118,12 @@ export function MachinerySection() {
         {/* ---------- Calls to action ---------- */}
         <Reveal delay={200}>
           <div className="mt-12 flex flex-col items-center justify-center gap-3.5 sm:flex-row sm:gap-4">
-            <Button href="/contact" variant="primary" className="group">
-              <TreeIcon className="size-5" />
+            <Button href="/contact" variant="primary" className="button--lg group">
+              <TwinFirIcon className="size-7 text-[#160f03]" />
               Get a Free Quote
               <ArrowRightIcon className="size-5 transition-transform duration-200 group-hover:translate-x-1" />
             </Button>
-            <Button href="/services" variant="outline-dark">
+            <Button href="/services" variant="outline-dark" className="button--lg">
               View Our Services
             </Button>
           </div>

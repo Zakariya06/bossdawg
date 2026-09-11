@@ -24,7 +24,7 @@ const propertyTypes = [
 
 export function PropertyTypesBar() {
   return (
-    <section className="bg-white py-8 md:py-10" aria-label="Properties we serve">
+    <section className="bg-white pt-1 pb-7 md:pt-2 md:pb-8" aria-label="Properties we serve">
       <Container>
         <div className="flex flex-col gap-8 xl:flex-row xl:items-center xl:justify-between">
           {/* ---------- Property types ---------- */}
@@ -34,9 +34,9 @@ export function PropertyTypesBar() {
 
               return (
                 <li key={type.label}>
-                  <Reveal delay={index * 90} className="flex items-center gap-3">
-                    <TypeIcon className="size-9 shrink-0 text-brand md:size-10" />
-                    <span className="font-display text-sm font-bold tracking-wide text-ink uppercase md:text-base">
+                  <Reveal delay={index * 90} className="flex items-center justify-center gap-3">
+                    <TypeIcon className="size-10 shrink-0 text-brand md:size-11" />
+                    <span className="font-display text-sm font-bold tracking-wide text-ink uppercase md:text-[15px]">
                       {type.label}
                     </span>
                   </Reveal>
@@ -48,14 +48,14 @@ export function PropertyTypesBar() {
           {/* ---------- Location ---------- */}
           <Reveal
             delay={400}
-            className="flex items-start gap-3 border-line xl:border-l xl:pl-10"
+            className="flex items-center justify-center gap-3 border-line xl:border-l xl:pl-10"
           >
-            <MapPinIcon className="mt-0.5 size-9 shrink-0 text-brand md:size-10" />
+            <MapPinIcon className="size-10 shrink-0 text-brand md:size-11" />
             <div>
-              <p className="font-display text-base font-bold tracking-wide text-ink uppercase">
+              <p className="font-display text-[15px] font-bold tracking-wide text-ink uppercase">
                 {siteConfig.location.city}
               </p>
-              <p className="mt-1 max-w-sm text-sm tracking-wide text-body-muted uppercase">
+              <p className="mt-1 max-w-sm text-xs tracking-wide text-body-muted uppercase">
                 {siteConfig.location.serviceArea}
               </p>
             </div>

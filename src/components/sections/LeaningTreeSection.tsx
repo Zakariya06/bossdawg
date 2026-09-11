@@ -3,9 +3,9 @@
  * Purpose: Explains how high-risk removals are handled, in three steps, beside
  * an angled crew photograph.
  *
- * Full-bleed photograph anchored to the top: the source has a white torn edge
- * baked along its lower edge, which the crop removes, so the shared .torn-edge
- * overlay can close the section across the full width instead.
+ * Laid out as the design has it: the copy sits over a soft dark ellipse on the
+ * full-bleed photograph, and the crew photo card sits right beside the three
+ * steps rather than out at the far edge, carrying an amber sign-written tag.
  */
 
 import Image from "next/image";
@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
 import { TextReveal } from "@/components/motion/TextReveal";
+import { BrandLockup } from "@/components/ui/BrandLockup";
 
 const steps = [
   {
@@ -39,74 +40,71 @@ export function LeaningTreeSection() {
         sizes="100vw"
         className="object-cover object-top"
       />
-      <div className="media-scrim media-scrim--deep" aria-hidden="true" />
+      {/* Soft dark ellipse behind the copy, with a light shadow from the top-left */}
+      <div className="leaning-tree__glow" aria-hidden="true" />
 
-      <Container className="relative z-10 py-14 md:py-16 lg:py-20">
-        <div className="grid items-center gap-10 lg:grid-cols-12">
-          {/* ---------- Copy and steps ---------- */}
-          <div className="lg:col-span-7 xl:col-span-6">
-            <Reveal delay={80}>
-              <p className="eyebrow text-white">Safe • Controlled • No Surprises</p>
-            </Reveal>
+      <Container className="relative z-10 py-16 md:py-20 lg:py-24">
+        <div className="max-w-5xl">
+          <Reveal delay={80}>
+            <p className="eyebrow text-white">Safe • Controlled • No Surprises</p>
+          </Reveal>
 
-            <TextReveal
-              as="h2"
-              delay={180}
-              className="heading-display mt-4 text-h2 text-white"
-              segments={[
-                { text: "When the tree is" },
-                { text: "leaning the wrong way.", className: "text-brand", newLine: true },
-              ]}
-            />
+          <TextReveal
+            as="h2"
+            delay={180}
+            className="heading-display mt-5 text-display text-white"
+            segments={[
+              { text: "When the tree is" },
+              { text: "leaning the wrong way.", className: "text-brand", newLine: true },
+            ]}
+          />
 
-            <Reveal delay={620}>
-              <p className="mt-5 max-w-lg text-lead text-on-dark">
-                We handle high-risk tree removals around homes, cottages, driveways and shoreline
-                properties with care and precision. Our crew uses proven techniques to cut and lower
-                trees safely, placing every piece on the ground without touching what matters.
-              </p>
-            </Reveal>
+          <Reveal delay={620}>
+            <p className="mt-6 max-w-2xl text-lead-lg text-on-dark">
+              We handle high-risk tree removals around homes, cottages, driveways and shoreline
+              properties with care and precision. Our crew uses proven techniques to cut and lower
+              trees safely, placing every piece on the ground without touching what{" "}
+              <strong className="font-bold text-white">matters</strong>.
+            </p>
+          </Reveal>
 
-            <ul className="mt-9 flex flex-col gap-6">
+          {/* ---------- Steps with the crew photo beside them ---------- */}
+          <div className="mt-10 grid items-start gap-x-10 gap-y-14 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:max-w-5xl">
+            <ul className="flex flex-col gap-7">
               {steps.map((step, index) => (
                 <li key={step.title}>
                   <Reveal delay={760 + index * 110} className="step-item">
-                    <h3 className="font-display text-base font-extrabold text-white md:text-lg">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1.5 max-w-md text-sm leading-snug text-on-dark-muted md:text-base">
-                      {step.description}
-                    </p>
+                    <h3 className="step-item__title">{step.title}</h3>
+                    <p className="step-item__desc">{step.description}</p>
                   </Reveal>
                 </li>
               ))}
             </ul>
-          </div>
 
-          {/* ---------- Angled crew photograph ---------- */}
-          <div className="lg:col-span-5 xl:col-span-6">
-            <Reveal delay={520} className="mx-auto w-full max-w-[330px] lg:ml-auto lg:mr-0">
-              <figure className="relative rotate-[2deg]">
-                <div className="photo-card aspect-[3/4]">
+            <Reveal delay={520} className="mx-auto w-full max-w-[460px] sm:mx-0">
+              <figure className="relative -rotate-[3deg]">
+                <div className="photo-card aspect-[4/5]">
                   <Image
                     src="/assets/leaning-tree-crew.webp"
                     alt="Crew member carrying a large chainsaw past the work truck on a job site"
                     fill
-                    sizes="330px"
+                    sizes="460px"
                     className="object-cover"
                   />
                 </div>
-                <figcaption className="photo-tag absolute -bottom-5 left-1/2 -translate-x-1/2 -rotate-[4deg] text-center font-script text-sm leading-tight whitespace-nowrap">
-                  Experienced Crew.
-                  <br />
-                  Real Results.
+                {/* Amber sign-written tag on a painted brush plate */}
+                <figcaption className="absolute -right-4 -bottom-9 -rotate-[5deg]">
+                  <BrandLockup
+                    tone="amber"
+                    lines={["Experienced Crew.", "Real Results."]}
+                    showRule={false}
+                  />
                 </figcaption>
               </figure>
             </Reveal>
           </div>
         </div>
       </Container>
-
     </section>
   );
 }

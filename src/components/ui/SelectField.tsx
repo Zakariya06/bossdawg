@@ -126,12 +126,13 @@ export function SelectField({
         onClick={() => (isOpen ? setIsOpen(false) : open())}
         onKeyDown={handleKeyDown}
       >
-        <Icon className="field-dark__icon size-5" />
-        <span className={`flex-1 text-base ${value ? "text-white" : "text-on-dark-muted"}`}>
+        {/* Sizes come from the .field-dark classes so every field matches */}
+        <Icon className="field-dark__icon" />
+        <span className={`field-dark__value ${value ? "text-white" : "text-on-dark-muted"}`}>
           {value ?? placeholder}
         </span>
         <ChevronDownIcon
-          className={`size-5 shrink-0 text-on-dark-muted transition-transform duration-200 ${
+          className={`field-dark__chevron transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
         />

@@ -4,8 +4,10 @@
  * FAQ SECTION
  * Purpose: Answers the questions homeowners ask before booking.
  *
- * Light section over the full-bleed crew photograph, which already fades to
- * white on its left so the accordion sits on clean ground.
+ * Flat cool-white section with the crew photograph pinned to the right at full
+ * section height (never cropped). The photo fades to the section's own white
+ * on its left, so the accordion sits on clean ground. On phones and tablets the
+ * photograph fills the section behind the accordion under a light wash.
  *
  * The accordion opens one item at a time. Height is animated with a
  * 0fr -> 1fr grid row (AGENTS.md §22 rule 11) so no measurement is needed and
@@ -23,7 +25,7 @@ const faqs = [
   {
     question: "How much does tree removal cost?",
     answer:
-      "It depends on the size, species, location and complexity of the job. We look at what's actually there during the on site assessment and put a clear figure in before any work starts.",
+      "It depends on the size, species, location and complexity of the job. We look at what's actually there during the on site assessment and put a clear figure on it before any work starts.",
   },
   {
     question: "What factors affect the price?",
@@ -72,75 +74,78 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="faq section">
-      <Image
-        src="/assets/faq-backdrop.webp"
-        alt=""
-        fill
-        sizes="100vw"
-        className="faq__backdrop"
-      />
+    <section className="faq">
+      <Container className="relative pt-14 pb-20 md:pt-10 md:pb-24 lg:pt-7 lg:pb-32">
+        {/* Copy column: left 57% of the container, slightly indented, per the plate */}
+        <div className="lg:w-[57%] lg:pl-7">
+          {/* ---------- Heading ---------- */}
+          <Reveal delay={80}>
+            <p className="eyebrow faq__eyebrow text-ink-soft">Frequently Asked Questions</p>
+          </Reveal>
 
-      <Container>
-        {/* ---------- Heading ---------- */}
-        <Reveal delay={80}>
-          <p className="eyebrow text-heading">Frequently Asked Questions</p>
-        </Reveal>
+          <TextReveal
+            as="h2"
+            delay={180}
+            className="text-reveal--tight heading-display mt-3 text-display-full leading-[0.83] text-ink"
+            segments={[
+              { text: "Straight Answers" },
+              { text: "Before You Decide", className: "text-brand", newLine: true },
+            ]}
+          />
 
-        <TextReveal
-          as="h2"
-          delay={180}
-          className="heading-display mt-4 text-h2"
-          segments={[
-            { text: "Straight Answers" },
-            { text: "Before You Decide", className: "text-brand", newLine: true },
-          ]}
-        />
+          <Reveal delay={560}>
+            <p className="faq__lede mt-3 text-ink">
+              The things homeowners ask about most, answered here.
+            </p>
+          </Reveal>
 
-        <Reveal delay={560}>
-          <p className="mt-4 max-w-xl text-lead text-body">
-            The things homeowners ask about most, answered here.
-          </p>
-        </Reveal>
+          {/* ---------- Accordion ---------- */}
+          <ul className="mt-5 flex flex-col gap-2">
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
 
-        {/* ---------- Accordion ---------- */}
-        <ul className="mt-10 flex max-w-2xl flex-col gap-2.5">
-          {faqs.map((faq, index) => {
-            const isOpen = openIndex === index;
+              return (
+                <li key={faq.question} className="faq-item" data-open={isOpen}>
+                  <h3>
+                    <button
+                      type="button"
+                      className="faq-item__question"
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-answer-${index}`}
+                      id={`faq-question-${index}`}
+                      onClick={() => setOpenIndex(isOpen ? null : index)}
+                    >
+                      <span>{faq.question}</span>
+                      <span className="faq-toggle" aria-hidden="true" />
+                    </button>
+                  </h3>
 
-            return (
-              <li key={faq.question} className="faq-item" data-open={isOpen}>
-                <h3>
-                  <button
-                    type="button"
-                    className="faq-item__question"
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-answer-${index}`}
-                    id={`faq-question-${index}`}
-                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                  <div
+                    className="faq-item__body"
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
                   >
-                    <span className="text-sm md:text-base">{faq.question}</span>
-                    <span className="faq-toggle" aria-hidden="true" />
-                  </button>
-                </h3>
-
-                <div
-                  className="faq-item__body"
-                  id={`faq-answer-${index}`}
-                  role="region"
-                  aria-labelledby={`faq-question-${index}`}
-                >
-                  <div>
-                    <p className="faq-item__answer text-sm leading-relaxed text-body md:text-[0.9375rem]">
-                      {faq.answer}
-                    </p>
+                    <div>
+                      <p className="faq-item__answer">{faq.answer}</p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </Container>
+
+      {/* Decorative: the crew member is described by the section's copy, not needed by screen readers */}
+      <div className="faq__photo">
+        <Image
+          src="/assets/faq-backdrop.webp"
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 96vw, 100vw"
+        />
+      </div>
     </section>
   );
 }

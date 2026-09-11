@@ -16,6 +16,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { SameDayVisitModal } from "@/components/sections/SameDayVisitModal";
 import { Reveal } from "@/components/motion/Reveal";
+import { BrandLockup } from "@/components/ui/BrandLockup";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { siteConfig } from "@/lib/site-config";
 import { ClockIcon, PhoneIcon, StarIcon } from "@/components/ui/Icons";
@@ -23,18 +24,18 @@ import { ClockIcon, PhoneIcon, StarIcon } from "@/components/ui/Icons";
 /** Hero support photographs — the two angled cards from the reference. */
 const heroPhotos = [
   {
-    tag: "Large & Complex Removals",
+    tag: ["Large & Complex", "Removals"],
     src: "/assets/card-large-complex-removals.webp",
     alt: "Arborist in a boom lift bucket cutting the top section from a tall bare tree beside a house",
-    rotation: "rotate-[3deg]",
+    rotation: "-rotate-[2.5deg]",
     /* Portrait source; centre crop keeps the lift and the tree in frame. */
     objectPosition: "center",
   },
   {
-    tag: "Experienced Tree Climbers",
+    tag: ["Experienced", "Tree Climbers"],
     src: "/assets/card-experienced-tree-climbers.webp",
     alt: "Roped climber in orange safety gear at the top of a spar, holding a chainsaw",
-    rotation: "-rotate-[2deg]",
+    rotation: "rotate-[4deg]",
     /* Landscape source cropped to portrait; bias right so the climber stays centred. */
     objectPosition: "62% center",
   },
@@ -163,26 +164,30 @@ export function HeroSection() {
 
           {/* ---------- Inset photographs and brand lockup ---------- */}
           <div className="hidden lg:col-span-5 lg:block xl:col-span-6">
-            <div className="ml-auto flex max-w-md flex-col items-end gap-6">
+            <div className="ml-auto flex max-w-md flex-col items-end gap-3">
               {heroPhotos.map((photo, index) => (
                 <Reveal
-                  key={photo.tag}
+                  key={photo.tag.join(" ")}
                   delay={600 + index * 180}
                   className="hero__photo"
                 >
                   <figure className={`relative ${photo.rotation}`}>
-                    <div className="photo-card aspect-[4/5]">
+                    <div className="photo-card aspect-[10/11]">
                       <Image
                         src={photo.src}
                         alt={photo.alt}
                         fill
-                        sizes="212px"
+                        sizes="268px"
                         style={{ objectPosition: photo.objectPosition }}
                         className="object-cover"
                       />
                     </div>
-                    <figcaption className="photo-tag absolute -bottom-3 left-1/2 -translate-x-1/2 -rotate-[3deg] whitespace-nowrap">
-                      {photo.tag}
+                    {/* Amber marker label clipped to the card's lower-right,
+                        overhanging the frame as in the design */}
+                    <figcaption className="photo-tag absolute right-1 bottom-[8%] -rotate-[4deg]">
+                      {photo.tag[0]}
+                      <br />
+                      {photo.tag[1]}
                     </figcaption>
                   </figure>
                 </Reveal>
@@ -190,14 +195,7 @@ export function HeroSection() {
 
               {/* Brand lockup — brush script on an angled dark plate */}
               <Reveal delay={1100} variant="fade">
-                <div className="-rotate-[6deg] bg-ink/85 px-5 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.45)]">
-                  <p className="font-script text-xl leading-tight text-white uppercase">
-                    Tough Trees.
-                    <br />
-                    Trusted Locally.
-                  </p>
-                  <span className="mt-2 block h-1.5 w-full rounded-full bg-brand" />
-                </div>
+<BrandLockup className="-rotate-[6deg]" />
               </Reveal>
             </div>
           </div>

@@ -5,27 +5,24 @@
  * Purpose: Social proof — the rating badge, customer reviews in a carousel,
  * and the contact strip.
  *
- * Carousel is Swiper (swiper/react) with Navigation, Pagination, Autoplay and
- * A11y. Slides step 1 -> 2 -> 3 across the breakpoints.
+ * Carousel is Swiper (swiper/react) with Autoplay, Keyboard and A11y. Slides
+ * step 1 -> 2 -> 3 -> 4 across the breakpoints; the arrows and dots are custom
+ * controls driven through the Swiper instance.
  *
- * Two settings are tied to there being only 4 real reviews:
- *   - It tops out at 3 per view. At 4 there would be nothing left to scroll.
- *   - It uses rewind rather than loop. Loop needs roughly twice the visible
- *     slides to duplicate from, so with 4 slides Swiper disables it and warns.
- *     Rewind jumps back to the first slide at the end and works at any count.
- * Once enough genuine reviews exist (about 8), switch rewind -> loop and raise
- * the breakpoint to 4 per view.
+ * The design shows four cards at once with four dots and working arrows, but
+ * there are only four real reviews. Swiper's loop mode needs at least twice the
+ * slides in view, so the same four reviews are rendered twice and the dots
+ * track `realIndex % reviews.length`. Nothing is added — never write filler
+ * testimonials to fill the carousel.
  */
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Autoplay, Keyboard, Navigation, Pagination } from "swiper/modules";
+import { A11y, Autoplay, Keyboard } from "swiper/modules";
 import type { Swiper as SwiperInstance } from "swiper/types";
 
 import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/motion/Reveal";
@@ -35,6 +32,7 @@ import {
   BbbTorchIcon,
   ChevronDownIcon,
   ClockIcon,
+  DocumentIcon,
   GoogleGIcon,
   PhoneIcon,
   StarIcon,
@@ -43,8 +41,7 @@ import {
 /**
  * Customer reviews as supplied in the design reference.
  *
- * Only add entries here that are real, attributable reviews — never write
- * filler testimonials to make the carousel longer.
+ * Only add entries here that are real, attributable reviews.
  */
 const reviews = [
   {
@@ -76,6 +73,9 @@ const reviews = [
   },
 ];
 
+/** The same reviews twice, so loop mode has enough slides at four per view. */
+const loopSlides = [...reviews, ...reviews];
+
 const contactPoints = [
   {
     icon: PhoneIcon,
@@ -83,15 +83,16 @@ const contactPoints = [
     value: siteConfig.phone.display,
     href: siteConfig.phone.href,
   },
-  { icon: ClockIcon, label: siteConfig.hours.days, value: siteConfig.hours.time },
-  { icon: StarIcon, label: "Free Estimates", value: "No Obligation" },
+  // The shared hours string ends in a comma for inline use; this strip sets it on its own line
+  { icon: ClockIcon, label: siteConfig.hours.days.replace(/,$/, ""), value: siteConfig.hours.time },
+  { icon: DocumentIcon, label: "Free Estimates", value: "No Obligation" },
 ];
 
-function StarRow({ className = "size-5" }: { className?: string }) {
+function StarRow({ className = "" }: { className?: string }) {
   return (
-    <div className="flex gap-0.5 text-gold" aria-hidden="true">
+    <div className={`star-row ${className}`.trim()} aria-hidden="true">
       {Array.from({ length: 5 }, (_, index) => (
-        <StarIcon key={index} className={className} />
+        <StarIcon key={index} />
       ))}
     </div>
   );
@@ -99,9 +100,10 @@ function StarRow({ className = "size-5" }: { className?: string }) {
 
 export function ReviewsSection() {
   const swiperRef = useRef<SwiperInstance | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="reviews section">
+    <section className="reviews">
       <Image
         src="/assets/reviews-backdrop.webp"
         alt=""
@@ -111,17 +113,19 @@ export function ReviewsSection() {
       />
       <div className="reviews__scrim" aria-hidden="true" />
 
-      <Container>
+      <Container className="relative pt-16 pb-12 md:pt-20 lg:pt-[5.5rem] lg:pb-9">
         {/* ---------- Heading ---------- */}
         <div className="flex flex-col items-center text-center">
           <Reveal delay={80}>
-            <p className="eyebrow eyebrow--centered text-gold">Real People. Real Results.</p>
+            <p className="eyebrow eyebrow--centered reviews__eyebrow text-white">
+              Real People. Real Results.
+            </p>
           </Reveal>
 
           <TextReveal
             as="h2"
             delay={180}
-            className="heading-display mt-5 text-h2 text-white"
+            className="text-reveal--tight heading-display mt-4 text-display-2xl text-white"
             segments={[
               { text: "Homeowners trust" },
               { text: "Bossdawg.", className: "text-brand", newLine: true },
@@ -130,32 +134,32 @@ export function ReviewsSection() {
 
           {/* ---------- Rating badge ---------- */}
           <Reveal delay={560}>
-            <div className="rating-badge mt-8">
-              <div className="flex items-center gap-3">
-                <GoogleGIcon className="size-8" />
-                <span className="font-display text-3xl font-extrabold text-white">
+            <div className="rating-badge mt-8 md:mt-10">
+              <div className="rating-badge__group">
+                <GoogleGIcon className="rating-badge__google" />
+                <span className="rating-badge__score">
                   {siteConfig.rating.score}
+                  <span className="sr-only"> out of 5 on Google</span>
                 </span>
-                <StarRow className="size-6" />
+                <StarRow className="rating-badge__stars" />
               </div>
 
               <span className="rating-badge__divider" aria-hidden="true" />
 
-              <p className="text-base text-on-dark-muted">
-                from {siteConfig.rating.count} reviews
-              </p>
+              <p className="rating-badge__count">from {siteConfig.rating.count} reviews</p>
 
               <span className="rating-badge__divider" aria-hidden="true" />
 
-              <div className="flex items-center gap-2.5">
-                <span className="flex size-9 items-center justify-center rounded bg-white text-ink">
-                  <BbbTorchIcon className="size-7" />
-                </span>
-                <p className="text-left font-display text-base leading-tight font-bold text-white">
+              <div className="rating-badge__bbb">
+                <span className="rating-badge__bbb-logo" aria-hidden="true">
+                  <BbbTorchIcon />
                   BBB
-                  <span className="block text-sm font-medium text-on-dark-muted">
-                    Accredited Business
-                  </span>
+                </span>
+                <p className="rating-badge__bbb-text">
+                  <span className="sr-only">BBB </span>
+                  Accredited
+                  <br />
+                  Business
                 </p>
               </div>
             </div>
@@ -163,64 +167,64 @@ export function ReviewsSection() {
         </div>
 
         {/* ---------- Review carousel ---------- */}
-        <Reveal delay={220} className="mt-10 md:mt-12">
-          <div className="flex items-center gap-3 md:gap-5">
+        {/* Breaks slightly out of the container at xl, as the plate's row runs wider */}
+        <Reveal delay={220} className="mt-7 xl:-mx-7">
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               className="reviews__nav hidden shrink-0 sm:flex"
-              aria-label="Previous reviews"
+              aria-label="Previous review"
               onClick={() => swiperRef.current?.slidePrev()}
             >
-              <ChevronDownIcon className="size-5 rotate-90" />
+              <ChevronDownIcon className="size-6 rotate-90" />
             </button>
 
             <Swiper
-              modules={[Navigation, Pagination, Autoplay, Keyboard, A11y]}
+              modules={[Autoplay, Keyboard, A11y]}
               onSwiper={(swiper) => {
                 swiperRef.current = swiper;
               }}
+              onRealIndexChange={(swiper) => setActiveIndex(swiper.realIndex % reviews.length)}
               spaceBetween={20}
               slidesPerView={1}
               speed={700}
               grabCursor
+              loop
               /* Drives the .swiper-slide-visible class the slide effect keys off */
               watchSlidesProgress
               breakpoints={{
                 640: { slidesPerView: 2 },
                 1024: { slidesPerView: 3 },
+                1280: { slidesPerView: 4 },
               }}
-              rewind
               autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
               keyboard={{ enabled: true }}
-              pagination={{ clickable: true }}
-              a11y={{ containerMessage: "Customer reviews" }}
-              className="!pb-11"
+              a11y={{ containerMessage: "Customer reviews", slideLabelMessage: "Customer review" }}
+              className="min-w-0 flex-1"
             >
-              {reviews.map((review) => (
-                <SwiperSlide key={review.name}>
+              {loopSlides.map((review, index) => (
+                <SwiperSlide key={`${review.name}-${index}`}>
                   <figure className="review-card">
-                    <StarRow />
+                    <StarRow className="review-card__stars" />
 
-                    <blockquote className="mt-4 flex-1 text-base leading-relaxed text-on-dark md:text-[1.0625rem]">
+                    <blockquote className="review-card__quote">
                       &ldquo;{review.quote}&rdquo;
                     </blockquote>
 
-                    <figcaption className="mt-5 flex items-center gap-3 border-t border-white/10 pt-4">
+                    <figcaption className="review-card__author">
                       {/* Job-site photographs, not portraits — see the note above */}
                       <span className="review-card__avatar">
                         <Image
                           src={review.avatar}
                           alt=""
                           fill
-                          sizes="56px"
+                          sizes="88px"
                           className="object-cover"
                         />
                       </span>
                       <span>
-                        <span className="block font-display text-base font-bold text-white">
-                          {review.name}
-                        </span>
-                        <span className="block text-sm text-on-dark-muted">{review.location}</span>
+                        <span className="review-card__name">{review.name}</span>
+                        <span className="review-card__location">{review.location}</span>
                       </span>
                     </figcaption>
                   </figure>
@@ -231,53 +235,55 @@ export function ReviewsSection() {
             <button
               type="button"
               className="reviews__nav hidden shrink-0 sm:flex"
-              aria-label="Next reviews"
+              aria-label="Next review"
               onClick={() => swiperRef.current?.slideNext()}
             >
-              <ChevronDownIcon className="size-5 -rotate-90" />
+              <ChevronDownIcon className="size-6 -rotate-90" />
             </button>
+          </div>
+
+          <div className="reviews__dots" role="group" aria-label="Choose a review">
+            {reviews.map((review, index) => (
+              <button
+                key={review.name}
+                type="button"
+                className="reviews__dot"
+                data-active={activeIndex === index}
+                aria-label={`Show review ${index + 1} of ${reviews.length}`}
+                aria-current={activeIndex === index}
+                onClick={() => swiperRef.current?.slideToLoop(index)}
+              />
+            ))}
           </div>
         </Reveal>
 
         {/* ---------- Contact strip ---------- */}
         <Reveal delay={200}>
-          <ul className="reviews__contact mt-10 grid gap-6 pt-8 sm:grid-cols-3">
+          <ul className="reviews__contact mt-8 md:mt-9">
             {contactPoints.map((point) => {
               const PointIcon = point.icon;
 
               const content = (
                 <>
-                  <span className="icon-chip size-11">
-                    <PointIcon className="size-5" />
+                  <span className="reviews__contact-icon">
+                    <PointIcon className="size-[46%]" />
                   </span>
-                  <span className="leading-tight">
-                    <span className="block text-sm text-on-dark-muted">{point.label}</span>
-                    <span className="block font-display text-base font-bold text-white">
-                      {point.value}
-                    </span>
+                  <span className="text-left">
+                    <span className="reviews__contact-label">{point.label}</span>
+                    <span className="reviews__contact-value">{point.value}</span>
                   </span>
                 </>
               );
 
               return (
-                <li key={point.value} className="flex items-center justify-center gap-3">
-                  {point.href ? (
-                    <a
-                      href={point.href}
-                      className="flex items-center gap-3 transition-opacity hover:opacity-80"
-                    >
-                      {content}
-                    </a>
-                  ) : (
-                    content
-                  )}
+                <li key={point.value} className="reviews__contact-item">
+                  {point.href ? <a href={point.href}>{content}</a> : content}
                 </li>
               );
             })}
           </ul>
         </Reveal>
       </Container>
-
     </section>
   );
 }
